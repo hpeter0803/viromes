@@ -1,4 +1,5 @@
-# Pipeline for annotating viral sequences based on the IMG/VR3 database
+#  Workflows for virome analyses in the NOMIS and ENSEMBLE projects
+- Pipeline for annotating viral sequences based on the IMG/VR3 database
 - [IMGVR3](https://genome.jgi.doe.gov/portal/IMG_VR/IMG_VR.home.html)
 
 # Setup
