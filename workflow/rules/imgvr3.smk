@@ -1,34 +1,25 @@
 """
 Author: Susheel Bhanu BUSI
-Affiliation: ESB group LCSB UniLU
-Date: [2021-10-26]
-Run: snakemake -s blast_snakefile
+Affiliation: Systems Ecology group LCSB UniLU
+Date: [2021-10-06]
 Latest modification:
 """
 
-import os, re
-import glob
-import pandas as pd
+# Taxonomic classification of VIRAL sequences identified via VIBRANT and checkV
+# Runs DIAMOND against the IMG/VR3 viral taxonomy database and merges with the coverage per sample
 
-configfile:"imgvr3_config.yaml"
-DATA_DIR=config["data_dir"]
-RESULTS_DIR=config["results_dir"]
-ENV_DIR=config["env_dir"]
-DB_DIR=config["db_dir"]
-FAA_DIR=config["faa_dir"]
-COV_DIR=config["cov_dir"]
-# SAMPLES=config["samples"]
-SAMPLES=[line.strip() for line in open("sample_list", 'r')]    # if using a sample list instead of putting them in a config file
 
-rule all:
+rule taxonomy:
     input:
         expand(os.path.join(RESULTS_DIR, "diamond/{sample}.{type}"), sample=SAMPLES, type=["daa", "tsv"]),
-        expand(os.path.join(RESULTS_DIR, "taxa_cov/{sample}_IMGVR_taxonomy_coverage.txt"), sample=SAMPLES)
+        expand(os.path.join(RESULTS_DIR, "taxa_cov/{sample}_IMGVR_taxonomy_coverage.txt"), sample=SAMPLES)    
+    output:
+        touch("status/imgvr3.done")
 
 
-#########
-# RULES #
-#########
+######################################
+# rules for viral TAXONOMIC analyses #
+######################################
 # Making DIAMOND db
 rule makedb:
     input:
@@ -54,7 +45,7 @@ rule makedb:
 # BLAST against IMGVR3 using DIAMOND
 rule blast:
     input:
-        faa=os.path.join(FAA_DIR, "VIBRANT_{sample}/VIBRANT_phages_{sample}/{sample}.phages_combined.faa"),
+        faa=rules.vibrant.output.viout2
         db=rules.makedb.output.DB
     output:
         daa=os.path.join(RESULTS_DIR, "diamond/{sample}.daa"), 

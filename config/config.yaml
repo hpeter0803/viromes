@@ -1,0 +1,53 @@
+############################################################
+# STEPS
+
+# Steps to be done
+# steps: ["imp"]  # RUN THIS FIRST and launch IMP3 outside of the workflow
+
+# Next the following steps should be run
+steps: ["identity", "taxonomy"]
+
+
+############################################################
+# INPUT
+
+# Directory from where the Snakefile is run, i.e. the Github repo:
+work_dir: "/mnt/data/sbusi/viromes"
+
+# Directory where the data is stored:
+data_dir: "/mnt/data/sbusi/viruses"
+
+# Directory where the results should be:
+results_dir: "/mnt/data/sbusi/viruses/results"
+
+# Directory where the conda environments are:
+env_dir: "/mnt/data/sbusi/viruses/envs"
+
+# Directory with the sample FAA files:
+faa_dir: "/mnt/esb-storage-01/NOMIS/ROCKS/vibrant_output"
+
+# Directory with the IMGVR3 database:
+db_dir: "/mnt/esb-storage-01/databases/IMGVR3"
+
+# Directory with the gene coverages:
+cov_dir: "/mnt/esb-storage-01/NOMIS/ROCKS/rockforest_results/coverage"
+
+
+############################################################
+# TOOLS 
+
+##############################
+# Identity workflow, i.e. to identify phages etc. 
+vibrant:
+  threads: 8
+
+checkv:
+  db: "/work/projects/nomis/tools/checkv/checkv-db-v1.0"	# UPDATE for ESB-compute-01 or litcrit
+  threads: 4
+
+
+##############################
+# Taxonomy workflow
+# DIAMOND parameters
+diamond:
+  threads: 12
