@@ -1,0 +1,24 @@
+# Samples
+samples: ["GL_R10_UP_3"]
+
+# Directory where the data is stored:
+data_dir: "/mnt/data/sbusi/viruses"
+
+# Directory where the results should be:
+results_dir: "/mnt/data/sbusi/viruses/results"
+
+# Directory where the conda environments are:
+env_dir: "/mnt/data/sbusi/viruses/envs"
+
+# Directory with the sample FAA files:
+faa_dir: "/mnt/esb-storage-01/NOMIS/ROCKS/vibrant_output"
+
+# Directory with the IMGVR3 database:
+db_dir: "/mnt/esb-storage-01/databases/IMGVR3"
+
+# Directory with the gene coverages:
+cov_dir: "/mnt/esb-storage-01/NOMIS/ROCKS/rockforest_results/coverage"
+
+# DIAMOND parameters
+diamond:
+  threads: 12
