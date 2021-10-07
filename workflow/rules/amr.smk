@@ -11,8 +11,7 @@ Latest modification:
 
 rule AMR:
     input:
-        expand(os.path.join(RESULTS_DIR, "vibrant_output/VIBRANT_{sample}/VIBRANT_phages_{sample}/{sample}.phages_combined.simple.{type}"), sample=SAMPLES, type=["faa", "fna"]),
-        expand(os.path.join(RESULTS_DIR, "checkv/{sample}/quality_summary.tsv"), sample=SAMPLES)
+        expand(os.path.join(RESULTS_DIR, "rgi/{sample}/{sample}_rgi.txt"), sample=SAMPLES)
     output:
         touch("status/AMR.done")
 
@@ -27,7 +26,7 @@ rule rgi:
         setup="status/rgi_setup.done"	# NOTE: to make sure that the same DB is used for all targets
     output:    
         faa=temp(os.path.join(RESULTS_DIR, "rgi/{sample}/input.faa")),
-        txt=os.path.join(RESULTS_DIR, "rgi/{sample}/rgi.txt")
+        txt=os.path.join(RESULTS_DIR, "rgi/{sample}/{sample}_rgi.txt")
     threads:
         config['rgi']['threads']
     conda:
