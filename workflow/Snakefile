@@ -40,6 +40,14 @@ if "taxonomy" in STEPS:
         "status/imgvr3.done"
     ]
 
+# Quality check
+if "checkv" in STEPS:
+    include:
+        "rules/checkv.smk"
+    TARGETS += [
+        "status/checkv.done"
+    ]
+
 # AMR
 if "amr" in STEPS:
     include:
