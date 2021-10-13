@@ -56,6 +56,12 @@ if "phist" in STEPS:
         "status/phist.done"
     ]
 
+if "spacepharer" in STEPS:
+    include:
+        "rules/spacepharer.smk"
+    TARGETS += [
+        "status/spacepharer.done"
+    ]
 
 # AMR
 if "amr" in STEPS:

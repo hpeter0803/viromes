@@ -9,7 +9,7 @@ Latest modification:
 # Purpose: to identify Phage hossts
 
 
-rule phist_all
+rule phist_all:
     input:
         expand(os.path.join(RESULTS_DIR, "phist/{sample}/{filetype}.csv"), sample=SAMPLES, filetype=["common_kmers", "predictions"])
     output:
