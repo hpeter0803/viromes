@@ -5,7 +5,7 @@
 # steps: ["imp"]  # RUN THIS FIRST and launch IMP3 outside of the workflow
 
 # Next the following steps should be run
-steps: ["identity", "taxonomy"]
+steps: ["identity", "taxonomy", "amr"]
 
 
 ############################################################
@@ -51,3 +51,11 @@ checkv:
 # DIAMOND parameters
 diamond:
   threads: 12
+
+##############################
+# AMR workflow
+# https://github.com/arpcard/rgi
+rgi:
+  threads: 8
+  db_url: "https://card.mcmaster.ca/latest/data"
+

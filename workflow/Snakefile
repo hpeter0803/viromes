@@ -40,6 +40,14 @@ if "taxonomy" in STEPS:
         "status/imgvr3.done"
     ]
 
+# AMR
+if "amr" in STEPS:
+    include:
+        "rules/amr.smk"
+    TARGETS += [
+        "status/AMR.done"
+    ]
+
 # No targets
 if len(TARGETS) == 0:
     raise Exception('You are not serious. Nothing to be done? Really?')
