@@ -8,7 +8,7 @@ Latest modification:
 # To run CHECKV on viral contig output from VIBRANT
 
 
-rule checkv
+rule checkv_all:
     input:
         expand(os.path.join(RESULTS_DIR, "checkv/{sample}/{sample}_goodQual_final.fna"), sample=SAMPLES)
     output:

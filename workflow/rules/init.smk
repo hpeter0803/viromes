@@ -42,7 +42,7 @@ ENV_DIR=config["env_dir"]
 DB_DIR=config["db_dir"]
 FAA_DIR=config["faa_dir"]
 COV_DIR=config["cov_dir"]
-
+MAGS_DIR=config["mags_dir"]
 
 ##############################
 # Steps

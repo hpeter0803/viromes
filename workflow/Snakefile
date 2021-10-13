@@ -48,6 +48,15 @@ if "checkv" in STEPS:
         "status/checkv.done"
     ]
 
+# Phage-host interactions
+if "phist" in STEPS:
+    include:
+        "rules/phist.smk"
+    TARGETS += [
+        "status/phist.done"
+    ]
+
+
 # AMR
 if "amr" in STEPS:
     include:
