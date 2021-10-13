@@ -10,7 +10,7 @@ Latest modification:
 
 rule checkv
     input:
-        expand(os.path.join(RESULTS_DIR, "checkv/{sample}/quality_summary.tsv"), sample=SAMPLES)
+        expand(os.path.join(RESULTS_DIR, "checkv/{sample}/{sample}_goodQual_final.fna"), sample=SAMPLES)
     output:
         touch("status/checkv.done")
 
@@ -50,9 +50,9 @@ rule checkv:
 
 rule quality_filter:
     input:
-        os.path.join(RESULTS_DIR, "checkv/{sample}/quality_summary.tsv")
+        qual_in=os.path.join(RESULTS_DIR, "checkv/{sample}/quality_summary.tsv")
     output:
-        os.path.join(RESULTS_DIR, "checkv/{sample}/{sample}_goodQual.tsv")
+        qual_out=os.path.join(RESULTS_DIR, "checkv/{sample}/goodQual.tsv")
     conda:
         os.path.join(ENV_DIR, "renv.yaml")
     log:
@@ -61,3 +61,18 @@ rule quality_filter:
         "Filtering to keep only the good quality calls for {wildcards.sample}"
     script:
         os.path.join(SRC_DIR, "checkVOutMod.R")
+
+rule quality_final:
+    input:
+        TSV=rules.quality_filter.output.qual_out,
+        FNA=rules.vibrant.output.viout3
+    output:
+        os.path.join(RESULTS_DIR, "checkv/{sample}/{sample}_goodQual_final.fna")
+    conda:
+        os.path.join(ENV_DIR, "samtools.yaml")
+    log:
+        os.path.join(RESULTS_DIR, "logs/checkv_final.{sample}.log")
+    message:
+        "Keeping only the good quality contigs from {wildcards.sample}"
+    shell:
+        "(date && do tail -n +2 {input.TSV} | cut -f1 | samtools faidx {input.FNA} -r - > {output} && date) &> {log}"
