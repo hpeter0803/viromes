@@ -18,6 +18,17 @@ rule checkv
 #################################
 # rules for viral quality check #
 #################################
+rule db_checkv:
+    output:
+        os.path.join(RESULTS_DIR, "dbs/checkv-db-v1.0/README.txt")
+    log:
+        os.path.join(RESULTS_DIR, "logs/checkv_db.log")
+    message:
+        "Downloading the CheckV database"
+    shell:
+        "(date && wget -O $(dirname $(dirname {output})) https://portal.nersc.gov/CheckV/checkv-db-v1.0.tar.gz && "
+        "cd $(dirname $(dirname {output})) && tar -zxvf checkv-db-v1.0.tar.gz && date) &> {log}"
+
 rule prep_checkv:
     input:
         rules.vibrant.output.viout3
@@ -43,10 +54,12 @@ rule checkv:
         config['checkv']['threads']
     log:
         os.path.join(RESULTS_DIR, "logs/checkv.{sample}.log")
+    params:
+        DB=rules.db_checkv.output
     message:
         "Running CheckV for {wildcards.sample}"
     shell:
-        "(date && checkv end_to_end -d {config[checkv][db]} {input} $(dirname {output}) -t {threads} && date) &> {log}"
+        "(date && checkv end_to_end -d $(dirname {params.DB}) {input} $(dirname {output}) -t {threads} && date) &> {log}"
 
 rule quality_filter:
     input:
