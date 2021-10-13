@@ -1,7 +1,13 @@
+#!/usr/bin/env Rscript
+# Rscript to get consensus output from PHIST
+
 suppressMessages(library(tidyverse))
 
+# Logging file
+sink(file=file(snakemake@log[[1]], open="wt"), type="message")
 
-filename <- "allPredictions.tsv"
+# filename <- "allPredictions.tsv"
+filename <- snakemake@input[[""]]
 tax <- read_tsv(filename,col_names = T, show_col_types = F)
 tax <- tax %>%
   filter(`adj-pvalue` <= 0.05)
@@ -63,6 +69,6 @@ for (j in unique(tax_class$phage)){
   VirTax <- rbind(VirTax,tempdf)
 }
 
-write_tsv(tax_done, "allPredictionsUniqueMatch.tsv")
-write_tsv(VirTax, "allPredictionsMultipleMatch.tsv")
+write_tsv(tax_done, snakemake@output[["UNIQ"]])
+write_tsv(VirTax, snakemake@output[["MULT"]])
 

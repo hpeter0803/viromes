@@ -1,9 +1,15 @@
+#!/usr/bin/env Rscript
+# Rscript to get consensus output from SpacePHARER
+
 suppressMessages(library(tidyverse))
 
-setwd("../Desktop/Virus/spacePharer/")
+# setwd("../Desktop/Virus/spacePharer/")
+# Logging file
+sink(file=file(snakemake@log[[1]], open="wt"), type="message")
 
 
-filename <- "allPredictionsTax.tsv"
+# filename <- "allPredictionsTax.tsv"
+filename <- snakemake@input[[""]]
 tax <- read_tsv(filename,col_names = T, show_col_types = F)
 
 duplicatedValues <- tax$phage_acc[duplicated(tax$phage_acc)]
@@ -63,6 +69,5 @@ for (j in unique(tax_class$phage_acc)){
   VirTax <- rbind(VirTax,tempdf)
 }
 
-write_tsv(tax_done, "allPredictionsUniqueMatch.tsv")
-write_tsv(VirTax, "allPredictionsMultipleMatch.tsv")
-
+write_tsv(tax_done, snakemake@output[["UNIQ"]])
+write_tsv(VirTax, snakemake@output[["MULT"]])

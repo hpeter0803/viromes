@@ -63,6 +63,14 @@ if "spacepharer" in STEPS:
         "status/spacepharer.done"
     ]
 
+# Consensus phage-host
+if "consensus" in STEPS:
+    include:
+        "rules/consensus.smk"
+    TARGETS += [
+        "status/consensus.done"
+    ]
+
 # AMR
 if "amr" in STEPS:
     include:

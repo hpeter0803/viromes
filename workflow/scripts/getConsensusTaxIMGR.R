@@ -1,17 +1,24 @@
+#!/usr/bin/env Rscript
+# Rscript to get consensus output from IMG/VR3 taxonomy
+
 suppressMessages(library(tidyverse))
 
-args <- commandArgs(trailingOnly = TRUE)
-filename <- args[1]
+# Logging file
+sink(file=file(snakemake@log[[1]], open="wt"), type="message")
 
-filename <- "VAR_61_k141_1551594.txt"
+args <- commandArgs(trailingOnly = TRUE)
+# filename <- args[1]
+# filename <- "VAR_61_k141_1551594.txt"
+
+filename <- snakemake@input[[""]]
 tax <- read_tsv(filename,col_names = F, show_col_types = F)
 colnames(tax) <- c("Query_ID","Subject_ID","Percentage_of_identical_matches","Alignment_length","Number_of_mismatches","Number_of_gap_openings","Start_of_alignment_in_query","End_of_alignment_in_query","Start_of_alignment_in_subject","End_of_alignment_in_subject","Expected_value","Bit_score")
 tax$Subject_ID <- gsub("\\|.*" , "",tax$Subject_ID,perl =TRUE)
 
-host <- read_tsv("IMGVR_all_Host_information.tsv",show_col_types = F)
+host <- read_tsv(snakemake@input[["IMG_HOST"]],show_col_types = F)
 names(host) <- gsub(x = names(host), pattern = "## ", replacement = "")  
 
-seqInfo <- read_tsv("IMGVR_all_Sequence_information.tsv",show_col_types = F)
+seqInfo <- read_tsv(snakemake@input[["IMG_SEQ"]],show_col_types = F)
 names(seqInfo) <- gsub(x = names(seqInfo), pattern = "## ", replacement = "")  
 
 seqInfo_subset <- seqInfo %>%
@@ -126,4 +133,4 @@ if(!is.data.frame(bacTax)){
 
 datfinal <- cbind(sample,VirTax$Taxa, VirTax$PercV, VirTax$TaxLevel, bacTax$Taxa, bacTax$PercB,bacTax$TaxLevel)
 datfinal <- as.data.frame(datfinal)
-write_tsv(datfinal, fileout, col_names = F)
+write_tsv(datfinal, fileout, col_names = F)         # need to replace "fileout" with "snakemake@output[1]
