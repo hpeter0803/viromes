@@ -5,7 +5,7 @@
 # steps: ["imp"]  # RUN THIS FIRST and launch IMP3 outside of the workflow
 
 # Next the following steps should be run
-steps: ["identity", "taxonomy", "amr"]
+steps: ["identity", "taxonomy", "checkv", "phist", "spacepharer", "consensus", "amr"]
 
 
 ############################################################
@@ -32,6 +32,8 @@ db_dir: "/mnt/esb-storage-01/databases/IMGVR3"
 # Directory with the gene coverages:
 cov_dir: "/mnt/esb-storage-01/NOMIS/ROCKS/rockforest_results/coverage"
 
+# Directory with all the MAGs of interest
+mags_dir: "/mnt/data/sbusi/viruses/results/mags"
 
 ############################################################
 # TOOLS 
@@ -51,6 +53,14 @@ checkv:
 # DIAMOND parameters
 diamond:
   threads: 12
+
+##############################
+# Phage-host identification
+phist:
+  threads: 16
+
+spacepharer:
+  threads: 16
 
 ##############################
 # AMR workflow

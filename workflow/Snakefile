@@ -40,6 +40,37 @@ if "taxonomy" in STEPS:
         "status/imgvr3.done"
     ]
 
+# Quality check
+if "checkv" in STEPS:
+    include:
+        "rules/checkv.smk"
+    TARGETS += [
+        "status/checkv.done"
+    ]
+
+# Phage-host interactions
+if "phist" in STEPS:
+    include:
+        "rules/phist.smk"
+    TARGETS += [
+        "status/phist.done"
+    ]
+
+if "spacepharer" in STEPS:
+    include:
+        "rules/spacepharer.smk"
+    TARGETS += [
+        "status/spacepharer.done"
+    ]
+
+# Consensus phage-host
+if "consensus" in STEPS:
+    include:
+        "rules/consensus.smk"
+    TARGETS += [
+        "status/consensus.done"
+    ]
+
 # AMR
 if "amr" in STEPS:
     include:

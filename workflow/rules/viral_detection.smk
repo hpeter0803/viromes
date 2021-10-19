@@ -38,19 +38,3 @@ rule vibrant:
     shell:
         "(date && python3 ./vibrant/VIBRANT/VIBRANT_run.py -t {threads} -i {input} -folder $(dirname $(dirname {output.viout1})) && date) &> {log}"
 
-rule checkv:
-    input:
-#        os.path.join(DATA_DIR, "{sample}/run1/Assembly/mg.assembly.merged.fa")
-        rules.vibrant.output.viout3
-    output:
-        os.path.join(RESULTS_DIR, "checkv/{sample}/quality_summary.tsv")
-    conda:
-        os.path.join(ENV_DIR, "checkv.yaml")
-    threads:
-        config['checkv']['threads']
-    log:
-        os.path.join(RESULTS_DIR, "logs/checkv.{sample}.log")
-    message:
-        "Running CheckV for {wildcards.sample}"
-    shell:
-        "(date && checkv end_to_end -d {config[checkv][db]} {input} $(dirname {output}) -t {threads} && date) &> {log}"
