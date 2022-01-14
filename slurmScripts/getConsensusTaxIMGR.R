@@ -3,7 +3,7 @@ suppressMessages(library(tidyverse))
 args <- commandArgs(trailingOnly = TRUE)
 filename <- args[1]
 
-filename <- "VAR_61_k141_1551594.txt"
+#filename <- "VAR_61_k141_1551594.txt"
 tax <- read_tsv(filename,col_names = F, show_col_types = F)
 colnames(tax) <- c("Query_ID","Subject_ID","Percentage_of_identical_matches","Alignment_length","Number_of_mismatches","Number_of_gap_openings","Start_of_alignment_in_query","End_of_alignment_in_query","Start_of_alignment_in_subject","End_of_alignment_in_subject","Expected_value","Bit_score")
 tax$Subject_ID <- gsub("\\|.*" , "",tax$Subject_ID,perl =TRUE)
