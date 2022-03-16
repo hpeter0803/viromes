@@ -18,7 +18,7 @@ diamond makedb --in IMGVR_all_proteins.faa -d IMGVR_all_proteins
 ## Take only viruses that were deemed medium or good quality in CheckV
 
 for i in */*fa
-	do prodigal -a $i\a -f gff -d ${i%.fa}.ffn -o ${i%.fa}.gff -i $i&
+	do srun -n1 -N1-c1 prodigal -a $i\a -f gff -d ${i%.fa}.ffn -o ${i%.fa}.gff -i $i&
 done
 wait
 
