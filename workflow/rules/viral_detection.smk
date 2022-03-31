@@ -8,6 +8,7 @@ Latest modification:
 # To identify VIRAL sequences from metagenomes
 # Runs VIBRANT on metagenomes, followed by CheckV and potentially combine the both
 
+localrules: viral_detection
 
 rule viral_detection:
     input:
