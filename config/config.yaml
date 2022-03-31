@@ -42,6 +42,7 @@ db_dir: "/work/projects/nomis/tools/IMGVR3"
 # Identity workflow, i.e. to identify phages etc. 
 vibrant:
     threads: 8
+    db: "/work/projects/nomis/tools/vibrant/VIBRANT/databases"
 
 checkv:
     db: "/work/projects/nomis/tools/checkv/checkv-db-v1.0"    # UPDATE for ESB-compute-01 or litcrit

@@ -33,8 +33,11 @@ rule vibrant:
         os.path.join(ENV_DIR, "vibrant.yaml")
     log:
         os.path.join(RESULTS_DIR, "logs/vibrant.{sample}.log")
+    params:
+        db=config['vibrant']['db']
     message:
         "Running VIBRANT for {wildcards.sample}"
     shell:
-        "(date && python3 ./vibrant/VIBRANT/VIBRANT_run.py -t {threads} -i {input} -folder $(dirname $(dirname {output.viout1})) && date) &> {log}"
+        "(date && export VIBRANT_DATA_PATH={params.db} &&"
+        "python3 ./vibrant/VIBRANT/VIBRANT_run.py -t {threads} -i {input} -folder $(dirname $(dirname {output.viout1})) && date) &> {log}"
 
