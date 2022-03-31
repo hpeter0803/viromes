@@ -11,8 +11,7 @@ Latest modification:
 
 rule viral_detection:
     input:
-        expand(os.path.join(RESULTS_DIR, "vibrant_output/VIBRANT_{sample}/VIBRANT_phages_{sample}/{sample}.phages_combined.simple.{type}"), sample=SAMPLES, type=["faa", "fna"]),
-        expand(os.path.join(RESULTS_DIR, "checkv/{sample}/quality_summary.tsv"), sample=SAMPLES)
+        expand(os.path.join(RESULTS_DIR, "vibrant_output/VIBRANT_{sample}/VIBRANT_phages_{sample}/{sample}.phages_combined.{type}"), sample=SAMPLES, type=["faa", "fna"])
     output:
         touch("status/viral_detection.done")
 
@@ -22,7 +21,7 @@ rule viral_detection:
 #############################
 rule vibrant:
     input:
-        os.path.join(DATA_DIR, "{sample}/run1/Assembly/mg.assembly.merged.fa")
+        os.path.join(DATA_DIR, "{sample}_mg.assembly.merged.fa")
     output:    
         viout1=os.path.join(RESULTS_DIR, "vibrant_output/VIBRANT_{sample}/{sample}.prodigal.faa"),
         viout2=os.path.join(RESULTS_DIR, "vibrant_output/VIBRANT_{sample}/VIBRANT_phages_{sample}/{sample}.phages_combined.faa"),

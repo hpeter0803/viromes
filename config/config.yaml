@@ -5,35 +5,35 @@
 # steps: ["imp"]  # RUN THIS FIRST and launch IMP3 outside of the workflow
 
 # Next the following steps should be run
-steps: ["identity", "taxonomy", "checkv", "phist", "spacepharer", "consensus", "amr"]
-
+# steps: ["identity", "taxonomy", "checkv", "phist", "spacepharer", "consensus", "amr"]
+steps: ["identity"]
 
 ############################################################
 # INPUT
 
 # Directory from where the Snakefile is run, i.e. the Github repo:
-work_dir: "/mnt/data/sbusi/viromes"
+work_dir: "/work/projects/nomis/assemblies/viromes"
 
 # Directory where the data is stored:
-data_dir: "/mnt/data/sbusi/viruses"
+data_dir: "/work/projects/nomis/assemblies"
 
 # Directory where the results should be:
-results_dir: "/mnt/data/sbusi/viruses/results"
+results_dir: "/work/projects/nomis/assemblies/virome_results"
 
 # Directory where the conda environments are:
-env_dir: "/mnt/data/sbusi/viruses/envs"
+env_dir: "/work/projects/nomis/assemblies/viromes/envs"
 
-# Directory with the sample FAA files:
-faa_dir: "/mnt/esb-storage-01/NOMIS/ROCKS/vibrant_output"
+# # Directory with the sample FAA files:
+# faa_dir: "/mnt/esb-storage-01/NOMIS/ROCKS/vibrant_output"
 
 # Directory with the IMGVR3 database:
-db_dir: "/mnt/esb-storage-01/databases/IMGVR3"
+db_dir: "/work/projects/nomis/tools/IMGVR3"
 
-# Directory with the gene coverages:
-cov_dir: "/mnt/esb-storage-01/NOMIS/ROCKS/rockforest_results/coverage"
+# # Directory with the gene coverages:
+# cov_dir: "/mnt/esb-storage-01/NOMIS/ROCKS/rockforest_results/coverage"
 
-# Directory with all the MAGs of interest
-mags_dir: "/mnt/data/sbusi/viruses/results/mags"
+# # Directory with all the MAGs of interest
+# mags_dir: "/mnt/data/sbusi/viruses/results/mags"
 
 ############################################################
 # TOOLS 
@@ -41,31 +41,31 @@ mags_dir: "/mnt/data/sbusi/viruses/results/mags"
 ##############################
 # Identity workflow, i.e. to identify phages etc. 
 vibrant:
-  threads: 8
+    threads: 8
 
 checkv:
-  db: "/work/projects/nomis/tools/checkv/checkv-db-v1.0"	# UPDATE for ESB-compute-01 or litcrit
-  threads: 4
+    db: "/work/projects/nomis/tools/checkv/checkv-db-v1.0"    # UPDATE for ESB-compute-01 or litcrit
+    threads: 4
 
 
 ##############################
 # Taxonomy workflow
 # DIAMOND parameters
 diamond:
-  threads: 12
+    threads: 12
 
 ##############################
 # Phage-host identification
 phist:
-  threads: 16
+    threads: 16
 
 spacepharer:
-  threads: 16
+    threads: 16
 
 ##############################
 # AMR workflow
 # https://github.com/arpcard/rgi
 rgi:
-  threads: 8
-  db_url: "https://card.mcmaster.ca/latest/data"
+    threads: 8
+    db_url: "https://card.mcmaster.ca/latest/data"
 
