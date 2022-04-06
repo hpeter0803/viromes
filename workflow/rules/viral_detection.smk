@@ -22,7 +22,7 @@ rule viral_detection:
 #############################
 rule vibrant:
     input:
-        os.path.join(DATA_DIR, "{sample}_mg.assembly.merged.fa")
+        os.path.join(DATA_DIR, "{sample}.fa")
     output:    
         viout1=os.path.join(RESULTS_DIR, "vibrant_output/VIBRANT_{sample}/{sample}.prodigal.faa"),
         viout2=os.path.join(RESULTS_DIR, "vibrant_output/VIBRANT_{sample}/VIBRANT_phages_{sample}/{sample}.phages_combined.faa"),
@@ -38,6 +38,6 @@ rule vibrant:
     message:
         "Running VIBRANT for {wildcards.sample}"
     shell:
-        "(date && export VIBRANT_DATA_PATH={params.db} &&"
-        "python3 ./vibrant/VIBRANT/VIBRANT_run.py -t {threads} -i {input} -folder $(dirname $(dirname {output.viout1})) && date) &> {log}"
+        "(date && export VIBRANT_DATA_PATH={params.db} && "
+        "VIBRANT_run.py -t {threads} -i {input} -folder $(dirname $(dirname {output.viout1})) && date) &> {log}"
 
