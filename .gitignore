@@ -8,3 +8,5 @@ slurm-*.out
 **/backup
 data_*
 *._*.smk
+._*
+*._*

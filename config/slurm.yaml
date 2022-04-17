@@ -16,3 +16,27 @@ vibrant:
   nodes: 1
   n: 1
   explicit: ""
+
+mapping_index:
+  time: "00-10:00:00"
+  partition: "bigmem"
+  qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+mapping:
+  time: "00-06:00:00"
+  partition: "bigmem"
+  qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+summarise_depth:
+  time: "00-12:00:00"
+  partition: "bigmem"
+  qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""

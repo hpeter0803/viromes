@@ -6,7 +6,7 @@
 
 # Next the following steps should be run
 # steps: ["identity", "taxonomy", "checkv", "phist", "spacepharer", "consensus", "amr"]
-steps: ["identity"]
+steps: ["identity", "vamb"]
 
 ############################################################
 # INPUT
@@ -16,6 +16,9 @@ work_dir: "/work/projects/nomis/assemblies/viromes"
 
 # Directory where the data is stored:
 data_dir: "/work/projects/nomis/assemblies"
+
+# Directory where the sample reads are stored:
+reads_dir: "/work/projects/nomis/preprocessed_reads"
 
 # Directory where the results should be:
 results_dir: "/work/projects/nomis/assemblies/virome_results"
@@ -41,32 +44,52 @@ db_dir: "/work/projects/nomis/tools/IMGVR3"
 ##############################
 # Identity workflow, i.e. to identify phages etc. 
 vibrant:
-    threads: 12
-    db: "/work/projects/nomis/tools/vibrant/VIBRANT"
+  threads: 12
+  db: "/work/projects/nomis/tools/vibrant/VIBRANT"
 
 checkv:
-    db: "/work/projects/nomis/tools/checkv/checkv-db-v1.0"    # UPDATE for ESB-compute-01 or litcrit
-    threads: 4
+  db: "/work/projects/nomis/tools/checkv/checkv-db-v1.0"  # UPDATE for ESB-compute-01 or litcrit
+  threads: 4
+
+vamb:
+  threads: 2
+
+##############################
+# Coverage #
+coverm:
+  threads: 24
+  bigmem_threads: 12
+  tmp_dir: "/scratch/users/sbusi/tmp"
+
+bwa:
+  threads: 10
+  map_threads: 6
+
+# http://www.htslib.org/doc/samtools.html
+samtools:
+  sort:
+    chunk_size: "4G"
+    chunk_size_bigmem: "16G"
 
 
 ##############################
 # Taxonomy workflow
 # DIAMOND parameters
 diamond:
-    threads: 12
+  threads: 12
 
 ##############################
 # Phage-host identification
 phist:
-    threads: 16
+  threads: 24
 
 spacepharer:
-    threads: 16
+  threads: 24
 
 ##############################
 # AMR workflow
 # https://github.com/arpcard/rgi
 rgi:
-    threads: 8
-    db_url: "https://card.mcmaster.ca/latest/data"
+  threads: 8
+  db_url: "https://card.mcmaster.ca/latest/data"
 

@@ -37,6 +37,7 @@ workdir:
 ##############################
 # Relevant directories
 DATA_DIR=config["data_dir"]
+READS_DIR=config["reads_dir"]
 RESULTS_DIR=config["results_dir"]
 ENV_DIR=config["env_dir"]
 DB_DIR=config["db_dir"]
@@ -52,5 +53,6 @@ STEPS = config["steps"]
 ##############################
 # Input
 SAMPLES = [line.strip() for line in open("config/sample_list.txt").readlines()]
+SEDIMENTS = [line.strip() for line in open("config/sediment_list.txt").readlines()]
 # SAMPLES=[line.strip() for line in open("config/sample_list.txt", 'r')]
 

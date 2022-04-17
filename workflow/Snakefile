@@ -32,6 +32,13 @@ if "identity" in STEPS:
         "status/viral_detection.done"
     ]
 
+if "vamb" in STEPS:
+    include:
+        "rules/phamb.smk"
+    TARGETS += [
+        "status/phamb.done"
+    ]
+
 # Taxonomy
 if "taxonomy" in STEPS:
     include:
