@@ -17,7 +17,8 @@ READS_DIR=config["reads_dir"]
 
 rule phamb:
     input:
-        expand(os.path.join(RESULTS_DIR, "mapping/concatenated_viruses_{type}.txt"), type=["depth", "paired"])
+        expand(os.path.join(RESULTS_DIR, "mapping/concatenated_viruses_{type}.txt"), type=["depth", "paired"]),
+        os.path.join(RESULTS_DIR, "checkm/checkm_report.txt")
     output:
         touch("status/phamb.done")
 
@@ -105,3 +106,42 @@ rule summarise_depth:
     shell:
         "(date && "
         "jgi_summarize_bam_contig_depths --outputDepth {output.depth} --pairedContigs {output.paired} {input} && date) &> {log}"
+
+rule vamb:
+    input:
+        asm=rules.concatenate.output,
+        depth=rules.summarise_depth.output.depth,
+    output:
+        os.path.join(RESULTS_DIR, "vamb/clusters.tsv")
+    log:
+        os.path.join(RESULTS_DIR, "logs/run_vamb.log")
+    threads:
+        config["vamb"]["threads"]
+    params:
+        contigID=config["vamb"]["contigID"]
+    conda:
+        os.path.join(ENV_DIR, "vamb.yaml")
+    message:
+        "Running VAMB across all samples"
+    shell:
+        "(date && vamb --outdir $(dirname {output}) --fasta {input.asm} --jgi {input.depth} && "
+        "date) &> {log}"
+
+rule checkm:
+    input:
+        rules.vamb.output
+    output:
+        os.path.join(RESULTS_DIR, "checkm/checkm_report.txt")
+    log:
+        os.path.join(RESULTS_DIR, "logs/checkm_vamb.log")
+    threads:
+        config["checkm"]["threads"]
+    params:
+        bins=os.path.join(RESULTS_DIR, "vamb/bins")
+    conda:
+        os.path.join(ENV_DIR, "checkm.yaml")
+    message:
+        "Running CheckM across all samples"
+    shell:
+        "(date && checkm lineage_wf -t {threads} -x fna {params.bins} $(dirname {output}) -f {output} && "
+        "date) &> {log}"

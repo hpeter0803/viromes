@@ -52,7 +52,13 @@ checkv:
   threads: 4
 
 vamb:
-  threads: 2
+  threads: 8
+  contigID: "_contig"
+
+
+checkm:
+  threads: 12
+
 
 ##############################
 # Coverage #
