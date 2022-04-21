@@ -112,20 +112,21 @@ rule vamb:
         asm=rules.concatenate.output,
         depth=rules.summarise_depth.output.depth,
     output:
-        os.path.join(RESULTS_DIR, "vamb/clusters.tsv")
+        os.path.join(RESULTS_DIR, "vamb_output/clusters.tsv")
     log:
         os.path.join(RESULTS_DIR, "logs/run_vamb.log")
     threads:
         config["vamb"]["threads"]
     params:
-        contigID=config["vamb"]["contigID"]
+        contigID=config["vamb"]["contigID"],
+        length=config["vamb"]["length"],
+        minfasta=config["vamb"]["minfasta"]
     conda:
         os.path.join(ENV_DIR, "vamb.yaml")
     message:
         "Running VAMB across all samples"
     shell:
-        "(date && vamb --outdir $(dirname {output}) --fasta {input.asm} --jgi {input.depth} && "
-        "date) &> {log}"
+        "(date && rm -rf $(dirname {output}) && vamb --outdir $(dirname {output}) --fasta {input.asm} --jgi {input.depth} -o {params.contigID} -m {params.length} --minfasta {params.minfasta} && date) &> {log}"
 
 rule checkm:
     input:

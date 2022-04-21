@@ -54,7 +54,8 @@ checkv:
 vamb:
   threads: 8
   contigID: "_contig"
-
+  length: 100
+  minfasta: 1000
 
 checkm:
   threads: 12

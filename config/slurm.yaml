@@ -40,3 +40,19 @@ summarise_depth:
   nodes: 1
   n: 1
   explicit: ""
+
+vamb:
+  time: "00-12:00:00"
+  partition: "bigmem"
+  qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+checkm:
+  time: "01-00:00:00"
+  partition: "bigmem"
+  qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
