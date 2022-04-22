@@ -32,10 +32,16 @@ if "identity" in STEPS:
         "status/viral_detection.done"
     ]
 
-if "vamb" in STEPS:
+if "phamb" in STEPS:
+    include:
+        "rules/vibrant_checkv.smk"
+    include:
+        "rules/vamb.smk"
     include:
         "rules/phamb.smk"
     TARGETS += [
+        "status/vibrant_checkv.done",
+        "status/vamb.done",
         "status/phamb.done"
     ]
 

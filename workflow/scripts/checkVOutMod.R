@@ -17,3 +17,10 @@ dat_filt <- dat %>%
 fileOut <- gsub("quality_summary.tsv", "goodQual.tsv", filename)
 
 write_tsv(dat_filt, snakemake@output[["qual_out"]])
+
+# collecting only "complete" contigs
+commplete <- dat %>%
+  filter(checkv_quality %in% c("Complete"))
+
+fileOut <- gsub("quality_summary.tsv", "complete_contigs.tsv", filename)
+write_tsv(dat_filt, snakemake@output[["complete"]])
