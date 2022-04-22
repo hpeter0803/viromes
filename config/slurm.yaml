@@ -56,3 +56,43 @@ checkm:
   nodes: 1
   n: 1
   explicit: ""
+
+deepvirfinder:
+  time: "02-00:00:00"
+  partition: "bigmem"
+  qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""  
+
+prodigal:
+  time: "00-04:00:00"
+  partition: "bigmem"
+  qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+hmmer:
+  time: "00-04:00:00"
+  partition: "bigmem"
+  qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""  
+
+phamb_RF:
+  time: "01-00:00:00"
+  partition: "bigmem"
+  qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+complete_bins:
+  time: "00-02:00:00"
+  partition: "batch"
+  qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""

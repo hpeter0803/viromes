@@ -15,7 +15,7 @@ BWA_IDX_EXT = ["amb", "ann", "bwt", "pac", "sa"]
 READS_DIR=config["reads_dir"]
 
 
-rule vamb:
+rule vamb_all:
     input:
         expand(os.path.join(RESULTS_DIR, "mapping/concatenated_viruses_{type}.txt"), type=["depth", "paired"]),
         os.path.join(RESULTS_DIR, "vamb_output/clusters.tsv")

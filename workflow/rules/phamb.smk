@@ -7,7 +7,7 @@ Latest modification:
 
 # To run VAMB on viral output from VIBRANT
 
-localrules: phamb, concatenate, summarise_depth
+localrules: db_phamb
 
 ############
 # Params
@@ -17,8 +17,8 @@ READS_DIR=config["reads_dir"]
 
 rule phamb:
     input:
-        expand(os.path.join(RESULTS_DIR, "mapping/concatenated_viruses_{type}.txt"), type=["depth", "paired"]),
-        os.path.join(RESULTS_DIR, "vamb_output/clusters.tsv")
+        os.path.join(RESULTS_DIR, "phamb_output/vamb_bins"),
+        os.path.join(RESULTS_DIR, "complete_bins")
     output:
         touch("status/phamb.done")
 
@@ -46,46 +46,94 @@ rule db_phamb:
 #############################
 rule deepvirfinder:
     input:
-        os.path.join(RESULTS_DIR, "checkv/output/goodQual_final.fna")
+        rules.quality_final.output
     output:
-        os.path.join(RESULTS_DIR, "dvf/goodQual_final.fna_gt2000bp_dvfpred.txt")
+        os.path.join(RESULTS_DIR, "dvf/goodQual_final.fna_gt2000bp_dvfpred.txt"),
+        os.path.join(RESULTS_DIR, "annotations/all.DVF.predictions.txt")
     log:
         os.path.join(RESULTS_DIR, "logs/dvf.log")
     threads:
         config["dvf"]["threads"]
     params:
-        dvf=config["dvf"]["path"]
+        dvf=config["dvf"]["path"],
+        length=config["dvf"]["length"]
     conda:
         os.path.join(ENV_DIR, "dvf.yaml")
     message:
         "Running DeepVirFinder"
     shell:
-        "(date && python3 {params.dvf} -i contigs.fna -o DVF -l 2000 -c 1 && date) &> {log}"
+        "(date && python3 {params.dvf} -i {input} -o $(dirname {output[0]}) -l {params.length} -c {threads} && "
+        "cp -v {output[0]} {output[1]} && date) &> {log}"
+
+rule prodigal:
+    input:
+        rules.quality_final.output
+    output:
+        FNA=os.path.join(RESULTS_DIR, "prodigal/goodQual_final.fna"),
+        FAA=os.path.join(RESULTS_DIR, "prodigal/goodQual_final.faa")
+    log:
+        os.path.join(RESULTS_DIR, "logs/prodigal.log")
+    threads:
+        config["prodigal"]["threads"]
+    conda:
+        os.path.join(ENV_DIR, "prodigal.yaml")
+    message:
+        "Running prodigal on the contigs"
+    shell:
+        "(date && prodigal -i {input} -d {output.FNA} -a {output.FAA} -p meta -g 11 && date) &> {log}"
+
+rule hmmer:
+    input:
+        FAA=rules.prodigal.output.FAA,
+        FNA=rules.prodigal.output.FNA
+    output:
+        out=os.path.join(RESULTS_DIR, "hmmer/output.txt"),
+        vog=os.path.join(RESULTS_DIR, "annotations/all.hmmVOG.tbl"),
+        bact=os.path.join(RESULTS_DIR, "annotations/all.hmmMiComplete105.tbl"),
+        FNA=os.path.join(RESULTS_DIR, "annotations/goodQual_final.fna.gz")
+    log:
+        os.path.join(RESULTS_DIR, "logs/hmmer.log")
+    threads:
+        config["hmmer"]["threads"]
+    conda:
+        os.path.join(ENV_DIR, "hmmer.yaml")
+    params:
+        vog=os.path.join(RESULTS_DIR, "dbs/phamb/AllVOG.hmm"),
+        bact=os.path.join(RESULTS_DIR, "dbs/phamb/Bact105.hmm")
+    message:
+        "Searching for VOGs and Micompete Bact105 hmms"
+    shell:
+        "(date && hmmsearch --cpu {threads} -E 1.0e-05 -o {output.out} --tblout {output.bact} {params.bact} {input.FAA} && "
+        "hmmsearch --cpu {threads} -E 1.0e-05 -o {output.out} --tblout {output.vog} {params.vog} {input.FAA} && "
+        "gzip {input.FNA} > {output.FNA} && date) &> {log}"
 
 
+############
+# RF model #
+############
+rule phamb_RF:
+    input:
+        FNA=rules.hmmer.output.FNA,
+        cluster=rules.vamb.output,
+        vog=os.path.join(RESULTS_DIR, "annotations/all.hmmVOG.tbl")
+    output:
+        out=os.path.join(RESULTS_DIR, "phamb_output/vambbins_aggregated_annotation.txt"),
+        bins=directory(os.path.join(RESULTS_DIR, "phamb_output/vamb_bins"))
+    log:
+        os.path.join(RESULTS_DIR, "logs/phamb.log")
+    threads:
+        config["phamb"]["threads"]
+    conda:
+        os.path.join(ENV_DIR, "phamb.yaml")
+    params:
+        run_RF=config["phamb"]["run_RF"]
+    message:
+        "Running phamb on non-complete contigs"
+    shell:
+        "(date && python {params.run_RF} {input.FNA} {input.cluster} $(dirname {input.vog}) $(dirname {output}) && date) &> {log}"
 
 
-# Phamb run
-mkdir annotations
-gunzip contigs.fna.gz
-python3 /user/DeepVirFinder/dvf.py -i contigs.fna -o DVF -l 2000 -c 1
-mv DVF/contigs.fna_gt2000bp_dvfpred.txt annotations/all.DVF.predictions.txt
-prodigal -i contigs.fna -d genes.fna -a proteins.faa -p meta -g 11
-hmmsearch --cpu {threads} -E 1.0e-05 -o output.txt --tblout annotations/all.hmmMiComplete105.tbl <micompleteDB> proteins.faa
-hmmsearch --cpu {threads} -E 1.0e-05 -o output.txt --tblout annotations/all.hmmVOG.tbl <VOGDB> proteins.faa
-gzip contigs.fna
-
-# 
-python mag_annotation/scripts/run_RF.py contigs.fna.gz vamb/clusters.tsv annotations resultdir
-
-ls resultsidr
-resultdir/vambbins_aggregated_annotation.txt
-resultdir/vambbins_RF_predictions.txt
-resultsdir/vamb_bins #Concatenated predicted viral bins - writes bins in chunks to files so there might be several! 
-
-
-
-
+# Binning COMPLETE viral contigs
 rule complete_bins:
     input:
         TSV=rules.quality_filter.output.complete,
@@ -95,20 +143,14 @@ rule complete_bins:
     conda:
         os.path.join(ENV_DIR, "biopython.yaml")
     params:
-        bins=os.path.join(RESULTS_DIR, "vamb_output/bins")
+        bins=os.path.join(RESULTS_DIR, "phamb_output/vamb_bins")
     log:
         os.path.join(RESULTS_DIR, "logs/complete_bins.log")
     message:
-        "Keeping only non-complete contigs"
-    run:
-        data=pd.read_csv(input.TSV, sep="\t", header=0, usecolss="contig_id").values
+        "Separating COMPLETE bins into individual fasta files"
+    script:
+        os.path.join(SRC_DIR, "complete_bins.py")
         
-        with open(snakemake.input.FNA, "r") as ifile:
-            for record in SeqIO.parse(ifile, "fasta"):
-                if record.id in data:
-                    with open(os.path.join(snakemake.output, "%.fna" % record.id), "w") as ofile:
-                        SeqIO.write(record, ofile, "fasta")
-
 
 # rule checkm:
 #     input:

@@ -6,7 +6,7 @@
 
 # Next the following steps should be run
 # steps: ["identity", "taxonomy", "checkv", "phist", "spacepharer", "consensus", "amr"]
-steps: ["identity", "vamb"]
+steps: ["identity", "phamb"]
 
 ############################################################
 # INPUT
@@ -60,6 +60,20 @@ vamb:
 checkm:
   threads: 12
 
+dvf:
+  threads: 6
+  length: 2000
+  path: "/work/projects/nomis/assemblies/viromes/submodules/DeepVirFinder/dvf.py"
+
+prodigal:
+  threads: 6
+
+hmmer:
+  threads: 6
+
+phamb:
+  threads: 6
+  run_RF: "/work/projects/nomis/assemblies/viromes/submodules/phamb/workflows/mag_annotation/scripts/run_RF.py"
 
 ##############################
 # Coverage #

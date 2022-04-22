@@ -39,10 +39,13 @@ if "phamb" in STEPS:
         "rules/vamb.smk"
     include:
         "rules/phamb.smk"
+    include:
+        "rules/final_checkv.smk"        
     TARGETS += [
         "status/vibrant_checkv.done",
         "status/vamb.done",
-        "status/phamb.done"
+        "status/phamb.done",
+        "status/final_checkv.done"
     ]
 
 # Taxonomy
