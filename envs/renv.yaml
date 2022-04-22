@@ -3,23 +3,6 @@ channels:
   - defaults
   - r
 dependencies:
-  - pandoc=2.9.2.1
   - r-base=4.0.2
-  - r-dplyr=1.0.0
-  - r-ggfortify=0.4.10
-  - r-ggplot2=3.3.2
-  - r-ggrepel=0.8.2
-  - r-ggsci=2.9
-  - r-ggsignif=0.6.0
-  - r-pheatmap=1.0.12
-  - r-rcolorbrewer=1.1_2
-  - r-reshape2=1.4.4
-  - r-rmarkdown=2.3
-  - r-scales=1.1.1
-  - r-testit=0.11
-  - r-upsetr=1.4.0
-  - r-viridis=0.5.1
-  - r-patchwork=1.1.1
-  - r-ggplotify=0.0.5
-  - r-cowplot
-  - r-tidyverse
+  - r-dplyr=1.0.8
+  - r-tidyverse=1.2.1

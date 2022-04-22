@@ -71,7 +71,7 @@ rule checkv_phamb:
 
 rule quality_filter_phamb:
     input:
-        qual_in=rules.checkv.output
+        qual_in=rules.checkv_phamb.output
     output:
         qual_out=os.path.join(RESULTS_DIR, "checkv/phamb/goodQual.tsv"),
         complete=os.path.join(RESULTS_DIR, "checkv/phamb/conplete_contigs.tsv")

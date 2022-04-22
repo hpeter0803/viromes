@@ -7,7 +7,7 @@ Latest modification:
 
 # To run VAMB on viral output from VIBRANT
 
-localrules: concatenate, db_checkv
+localrules: concatenate, db_checkv, prep_checkv
 
 ############
 # Params
