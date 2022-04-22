@@ -45,4 +45,4 @@ snakemake -s ${SMK_SMK} --cores ${SMK_CORES} --local-cores 1 --jobs ${SMK_JOBS} 
 # run the pipeline
 snakemake -s ${SMK_SMK} --cores ${SMK_CORES} --local-cores 1 --jobs ${SMK_JOBS} \
 --configfile ${SMK_CONFIG} --use-conda --conda-prefix ${CONDA_PREFIX}/pipeline \
---cluster-config ${SMK_SLURM} --cluster "${SMK_CLUSTER}" --rerun-incomplete -rpn
+--cluster-config ${SMK_SLURM} --cluster "${SMK_CLUSTER}" --rerun-incomplete -rp -k

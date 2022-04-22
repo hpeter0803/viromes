@@ -7,7 +7,7 @@ Latest modification:
 
 # To run VAMB on viral output from VIBRANT
 
-localrules: phamb, concatenate, summarise_depth
+localrules: concatenate, db_checkv
 
 ############
 # Params
@@ -53,12 +53,14 @@ rule db_checkv:
     message:
         "Downloading the CheckV database"
     shell:
-        "(date && wget -O $(dirname $(dirname {output})) https://portal.nersc.gov/CheckV/checkv-db-v1.0.tar.gz && "
+        "(date && mkdir -P $(dirname {output}) && "
+        "wget -P $(dirname $(dirname {output})) https://portal.nersc.gov/CheckV/checkv-db-v1.0.tar.gz && "
         "cd $(dirname $(dirname {output})) && tar -zxvf checkv-db-v1.0.tar.gz && date) &> {log}"
 
 rule prep_checkv:
     input:
-        rules.concatenate.output
+        db=os.path.join(RESULTS_DIR, "dbs/checkv-db-v1.0/README.txt"),
+        FNA=rules.concatenate.output
     output:
         os.path.join(RESULTS_DIR, "checkv/input/all_checkv_input.fna")
     conda:
@@ -68,11 +70,12 @@ rule prep_checkv:
     message:
         "Editing VIBRANT output to remove spaces"
     shell:
-        "(date && perl -pe 's/ (.*)_fragment_(\d+)/\_$2 $1/g' {input} > {output} && date) &> {log}"
+        "(date && perl -pe 's/ (.*)_fragment_(\d+)/\_$2 $1/g' {input.FNA} > {output} && date) &> {log}"
 
 rule checkv:
     input:
-        rules.prep_checkv.output
+        db=os.path.join(RESULTS_DIR, "dbs/checkv-db-v1.0/README.txt"),
+        FNA=rules.prep_checkv.output
     output:
         os.path.join(RESULTS_DIR, "checkv/output/quality_summary.tsv")
     conda:
@@ -86,7 +89,7 @@ rule checkv:
     message:
         "Running CheckV"
     shell:
-        "(date && checkv end_to_end -d $(dirname {params.DB}) {input} $(dirname {output}) -t {threads} && date) &> {log}"
+        "(date && checkv end_to_end -d $(dirname {params.DB}) {input.FNA} $(dirname {output}) -t {threads} && date) &> {log}"
 
 rule quality_filter:
     input:
