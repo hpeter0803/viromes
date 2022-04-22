@@ -15,104 +15,73 @@ BWA_IDX_EXT = ["amb", "ann", "bwt", "pac", "sa"]
 READS_DIR=config["reads_dir"]
 
 
-rule vamb:
+rule phamb:
     input:
         expand(os.path.join(RESULTS_DIR, "mapping/concatenated_viruses_{type}.txt"), type=["depth", "paired"]),
         os.path.join(RESULTS_DIR, "vamb_output/clusters.tsv")
     output:
-        touch("status/vamb.done")
+        touch("status/phamb.done")
 
 
-###########################
-# rules for VAMB binnning #
-###########################
-# BWA index
-rule mapping_index:
-    input:
-        rules.quality_final.output
+###################
+# PHAMB databases #
+###################
+rule db_phamb:
     output:
-        expand(os.path.join(RESULTS_DIR, "mapping/concatenated_viruses.{ext}"), ext=BWA_IDX_EXT)
+        vog=os.path.join(RESULTS_DIR, "dbs/phamb/AllVOG.hmm"),
+        bact=os.path.join(RESULTS_DIR, "dbs/phamb/Bact105.hmm")
     log:
-        os.path.join(RESULTS_DIR, "logs/mapping.bwa.index.log")
-    threads:
-        config["bwa"]["threads"]
-    params:
-        idx_prefix=lambda wildcards, output: os.path.splitext(output[0])[0]
-    conda:
-        os.path.join(ENV_DIR, "bwa.yaml")
+        os.path.join(RESULTS_DIR, "logs/checkv_db.log")
     message:
-        "Mapping: BWA index for assembly mapping"
+        "Downloading the VOGdb and Micomplete Bacterial HMMs for PHAMB"
     shell:
-        "(date && bwa index {input} -p {params.idx_prefix} && date) &> {log}"
-
-# Short reads
-rule mapping:
-    input:
-        r1=os.path.join(READS_DIR, "{sample}_mg.r1.preprocessed.fq"),
-        r2=os.path.join(READS_DIR, "{sample}_mg.r2.preprocessed.fq"),
-        idx=expand(os.path.join(RESULTS_DIR, "mapping/concatenated_viruses.{ext}"), ext=BWA_IDX_EXT),
-    output:
-        os.path.join(RESULTS_DIR, "mapping/{sample}.sorted.bam")
-    log:
-        os.path.join(RESULTS_DIR, "logs/bwa.mem.{sample}.log")
-    threads:
-        config["bwa"]["map_threads"]
-    params:
-        asm=rules.quality_final.output,
-        idx_prefix=lambda wildcards, input: os.path.splitext(input.idx[0])[0],
-        bam_prefix=lambda wildcards, output: os.path.splitext(output[0])[0],
-        chunk_size=config["samtools"]["sort"]["chunk_size"]
-    conda:
-        os.path.join(ENV_DIR, "bwa.yaml")
-    message:
-        "Mapping short reads w/ BWA for {wildcards.sample}"
-    shell:
-        "(date && "
-        "bwa mem -t {threads} {params.idx_prefix} {input.r1} {input.r2} | "
-        "samtools view -@ {threads} -SbT {params.asm} | "
-        "samtools sort -@ {threads} -m {params.chunk_size} -T {params.bam_prefix} -o {output} && "
+        "(date && wget -O $(dirname $(dirname {output})) http://fileshare.csb.univie.ac.at/vog/vog211/vog.hmm.tar.gz && "
+        "cd $(dirname $(dirname {output})) && tar -zxvf vog.hmm.tar.gz && cat vog.hmm/*.hmm > {output.vog} && "
+        "wget -O $(dirname $(dirname {output.bact})) https://bitbucket.org/evolegiolab/micomplete/src/master/micomplete/share/Bact105.hmm &&"
         "date) &> {log}"
 
-rule summarise_depth:
-    input:
-        expand(os.path.join(RESULTS_DIR, "mapping/{sample}.sorted.bam"), sample=SEDIMENTS)
-    output:
-        depth=os.path.join(RESULTS_DIR, "mapping/concatenated_viruses_depth.txt"),
-        paired=os.path.join(RESULTS_DIR, "mapping/concatenated_viruses_paired.txt")
-    log:
-        os.path.join(RESULTS_DIR, "logs/summarise_depth.log")
-    threads:
-        config["bwa"]["threads"]
-    conda:
-        os.path.join(ENV_DIR, "metabat2.yaml")
-    message:
-        "Getting coverage for all the samples"
-    shell:
-        "(date && "
-        "jgi_summarize_bam_contig_depths --outputDepth {output.depth} --pairedContigs {output.paired} {input} && date) &> {log}"
 
-rule vamb:
+#############################
+# rules for PHAMB binnning #
+#############################
+rule deepvirfinder:
     input:
-        asm=rules.quality_final.output,
-        depth=rules.summarise_depth.output.depth,
+        os.path.join(RESULTS_DIR, "checkv/output/goodQual_final.fna")
     output:
-        os.path.join(RESULTS_DIR, "vamb_output/clusters.tsv")
+        os.path.join(RESULTS_DIR, "dvf/goodQual_final.fna_gt2000bp_dvfpred.txt")
     log:
-        os.path.join(RESULTS_DIR, "logs/run_vamb.log")
+        os.path.join(RESULTS_DIR, "logs/dvf.log")
     threads:
-        config["vamb"]["threads"]
+        config["dvf"]["threads"]
     params:
-        contigID=config["vamb"]["contigID"],
-        length=config["vamb"]["length"],
-        minfasta=config["vamb"]["minfasta"]
+        dvf=config["dvf"]["path"]
     conda:
-        os.path.join(ENV_DIR, "vamb.yaml")
+        os.path.join(ENV_DIR, "dvf.yaml")
     message:
-        "Running VAMB across all samples"
+        "Running DeepVirFinder"
     shell:
-        "(date && rm -rf $(dirname {output}) && vamb --outdir $(dirname {output}) --fasta {input.asm} --jgi {input.depth} -o {params.contigID} -m {params.length} --minfasta {params.minfasta} && date) &> {log}"
+        "(date && python3 {params.dvf} -i contigs.fna -o DVF -l 2000 -c 1 && date) &> {log}"
 
 
+
+
+# Phamb run
+mkdir annotations
+gunzip contigs.fna.gz
+python3 /user/DeepVirFinder/dvf.py -i contigs.fna -o DVF -l 2000 -c 1
+mv DVF/contigs.fna_gt2000bp_dvfpred.txt annotations/all.DVF.predictions.txt
+prodigal -i contigs.fna -d genes.fna -a proteins.faa -p meta -g 11
+hmmsearch --cpu {threads} -E 1.0e-05 -o output.txt --tblout annotations/all.hmmMiComplete105.tbl <micompleteDB> proteins.faa
+hmmsearch --cpu {threads} -E 1.0e-05 -o output.txt --tblout annotations/all.hmmVOG.tbl <VOGDB> proteins.faa
+gzip contigs.fna
+
+# 
+python mag_annotation/scripts/run_RF.py contigs.fna.gz vamb/clusters.tsv annotations resultdir
+
+ls resultsidr
+resultdir/vambbins_aggregated_annotation.txt
+resultdir/vambbins_RF_predictions.txt
+resultsdir/vamb_bins #Concatenated predicted viral bins - writes bins in chunks to files so there might be several! 
 
 
 

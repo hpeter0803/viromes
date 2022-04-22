@@ -24,7 +24,7 @@ rule vibrant_checkv:
 
 ################################
 # Preparing VIBRANT assemblies #
-###############################
+################################
 rule concatenate:
     input:
         expand(os.path.join(RESULTS_DIR, "vibrant_output/VIBRANT_{sample}/VIBRANT_phages_{sample}/{sample}.phages_combined.fna"), sample=SEDIMENTS)
@@ -93,7 +93,7 @@ rule quality_filter:
         qual_in=rules.checkv.output
     output:
         qual_out=os.path.join(RESULTS_DIR, "checkv/output/goodQual.tsv"),
-        complete=os.path.join(RESULTS_DIR, "checkv/output/conplete_contigs.tsv"),
+        complete=os.path.join(RESULTS_DIR, "checkv/output/conplete_contigs.tsv")
     conda:
         os.path.join(ENV_DIR, "renv.yaml")
     log:
@@ -117,3 +117,4 @@ rule quality_final:
         "Keeping only non-complete contigs"
     shell:
         "(date && do tail -n +2 {input.TSV} | cut -f1 | samtools faidx {input.FNA} -r - > {output} && date) &> {log}"
+
