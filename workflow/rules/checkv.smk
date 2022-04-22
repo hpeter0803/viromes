@@ -7,6 +7,7 @@ Latest modification:
 
 # To run CHECKV on viral contig output from VIBRANT
 
+localrules: db_checkv, prep_checkv, quality_filter
 
 rule checkv_all:
     input:

@@ -7,7 +7,7 @@ Latest modification:
 
 # To run VAMB on viral output from VIBRANT
 
-localrules: final_checkv
+localrules: cat_bins, final_checkv, prep_checkv_phamb, quality_filter_phamb
 
 ############
 # Params

@@ -41,6 +41,7 @@ summarise_depth:
   n: 1
   explicit: ""
 
+# Vamb, CheckV and Phamb
 vamb:
   time: "00-12:00:00"
   partition: "bigmem"
@@ -49,8 +50,8 @@ vamb:
   n: 1
   explicit: ""
 
-checkm:
-  time: "02-00:00:00"
+checkv:
+  time: "01-00:00:00"
   partition: "bigmem"
   qos: "normal"
   nodes: 1
@@ -92,6 +93,22 @@ phamb_RF:
 complete_bins:
   time: "00-02:00:00"
   partition: "batch"
+  qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+prep_checkv_phamb:
+  time: "01-00:00:00"
+  partition: "bigmem"
+  qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+quality_final:  
+  time: "00-04:00:00"
+  partition: "bigmem"
   qos: "normal"
   nodes: 1
   n: 1
