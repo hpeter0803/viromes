@@ -138,7 +138,7 @@ rule checkm:
     threads:
         config["checkm"]["threads"]
     params:
-        bins=os.path.join(RESULTS_DIR, "vamb/bins")
+        bins=os.path.join(RESULTS_DIR, "vamb_output/bins")
     conda:
         os.path.join(ENV_DIR, "checkm.yaml")
     message:
