@@ -130,7 +130,7 @@ rule phamb_RF:
     message:
         "Running phamb on non-complete contigs"
     shell:
-        "(date && python {params.run_RF} {input.FNA} {input.cluster} $(dirname {input.vog}) $(dirname {output}) && date) &> {log}"
+        "(date && python {params.run_RF} {input.FNA} {input.cluster} $(dirname {input.vog}) $(dirname {output.out}) && date) &> {log}"
 
 
 # Binning COMPLETE viral contigs
@@ -143,7 +143,8 @@ rule complete_bins:
     conda:
         os.path.join(ENV_DIR, "biopython.yaml")
     params:
-        bins=os.path.join(RESULTS_DIR, "phamb_output/vamb_bins")
+        bins=os.path.join(RESULTS_DIR, "phamb_output/vamb_bins"),
+        predictions=os.path.join(RESULTS_DIR, "phamb_output/vambbins_aggregated_annotation.txt")
     log:
         os.path.join(RESULTS_DIR, "logs/complete_bins.log")
     message:

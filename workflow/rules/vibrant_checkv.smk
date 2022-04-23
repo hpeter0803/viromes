@@ -7,7 +7,7 @@ Latest modification:
 
 # To run VAMB on viral output from VIBRANT
 
-localrules: concatenate, db_checkv, prep_checkv
+localrules: concatenate, db_checkv, prep_checkv, quality_filter
 
 ############
 # Params
@@ -96,9 +96,9 @@ rule quality_filter:
         qual_in=rules.checkv.output
     output:
         qual_out=os.path.join(RESULTS_DIR, "checkv/output/goodQual.tsv"),
-        complete=os.path.join(RESULTS_DIR, "checkv/output/conplete_contigs.tsv")
+        complete=os.path.join(RESULTS_DIR, "checkv/output/complete_contigs.tsv")
     conda:
-        os.path.join(ENV_DIR, "renv.yaml")
+        os.path.join(ENV_DIR, "R.yaml")
     log:
         os.path.join(RESULTS_DIR, "logs/checkv_quality.log")
     message:
@@ -119,5 +119,5 @@ rule quality_final:
     message:
         "Keeping only non-complete contigs"
     shell:
-        "(date && do tail -n +2 {input.TSV} | cut -f1 | samtools faidx {input.FNA} -r - > {output} && date) &> {log}"
+        "(date && tail -n +2 {input.TSV} | cut -f1 | samtools faidx {input.FNA} -r - > {output} && date) &> {log}"
 

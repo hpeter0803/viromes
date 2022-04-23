@@ -17,7 +17,7 @@ READS_DIR=config["reads_dir"]
 
 rule final_checkv:
     input:
-        os.path.join(RESULTS_DIR, "checkv/phamb/conplete_contigs.tsv")
+        os.path.join(RESULTS_DIR, "checkv/phamb/complete_contigs.tsv")
     output:
         touch("status/final_checkv.done")
 
@@ -26,7 +26,9 @@ rule final_checkv:
 # Preparing final run of checkv on all bins #
 #############################################
 rule cat_bins:
-    output:    
+    input:
+        rules.phamb_RF.output.out
+    output:
         os.path.join(RESULTS_DIR, "phamb_output/all_bins.fna")
     params:
         bins=os.path.join(RESULTS_DIR, "phamb_output/vamb_bins")
@@ -74,9 +76,9 @@ rule quality_filter_phamb:
         qual_in=rules.checkv_phamb.output
     output:
         qual_out=os.path.join(RESULTS_DIR, "checkv/phamb/goodQual.tsv"),
-        complete=os.path.join(RESULTS_DIR, "checkv/phamb/conplete_contigs.tsv")
+        complete=os.path.join(RESULTS_DIR, "checkv/phamb/complete_contigs.tsv")
     conda:
-        os.path.join(ENV_DIR, "renv.yaml")
+        os.path.join(ENV_DIR, "R.yaml")
     log:
         os.path.join(RESULTS_DIR, "logs/checkv_quality.log")
     message:
