@@ -37,7 +37,7 @@ rule db_phamb:
     shell:
         "(date && wget -O $(dirname $(dirname {output})) http://fileshare.csb.univie.ac.at/vog/vog211/vog.hmm.tar.gz && "
         "cd $(dirname $(dirname {output})) && tar -zxvf vog.hmm.tar.gz && cat vog.hmm/*.hmm > {output.vog} && "
-        "wget -O $(dirname $(dirname {output.bact})) https://bitbucket.org/evolegiolab/micomplete/src/master/micomplete/share/Bact105.hmm &&"
+        "wget -O $(dirname $(dirname {output.bact})) https://bitbucket.org/evolegiolab/micomplete/src/master/micomplete/share/Bact105.hmm && "
         "date) &> {log}"
 
 
@@ -73,6 +73,8 @@ rule prodigal:
         FAA=os.path.join(RESULTS_DIR, "prodigal/goodQual_final.faa")
     log:
         os.path.join(RESULTS_DIR, "logs/prodigal.log")
+
+
     threads:
         config["prodigal"]["threads"]
     conda:
@@ -85,7 +87,9 @@ rule prodigal:
 rule hmmer:
     input:
         FAA=rules.prodigal.output.FAA,
-        FNA=rules.prodigal.output.FNA
+        FNA=rules.prodigal.output.FNA,
+        vog=rules.db_phamb.output.vog,
+        bact=rules.db_phamb.output.bact
     output:
         out=os.path.join(RESULTS_DIR, "hmmer/output.txt"),
         vog=os.path.join(RESULTS_DIR, "annotations/all.hmmVOG.tbl"),
@@ -99,12 +103,12 @@ rule hmmer:
         os.path.join(ENV_DIR, "hmmer.yaml")
     params:
         vog=os.path.join(RESULTS_DIR, "dbs/phamb/AllVOG.hmm"),
-        bact=os.path.join(RESULTS_DIR, "dbs/phamb/Bact105.hmm")
+        
     message:
         "Searching for VOGs and Micompete Bact105 hmms"
     shell:
-        "(date && hmmsearch --cpu {threads} -E 1.0e-05 -o {output.out} --tblout {output.bact} {params.bact} {input.FAA} && "
-        "hmmsearch --cpu {threads} -E 1.0e-05 -o {output.out} --tblout {output.vog} {params.vog} {input.FAA} && "
+        "(date && hmmsearch --cpu {threads} -E 1.0e-05 -o {output.out} --tblout {output.bact} {input.bact} {input.FAA} && "
+        "hmmsearch --cpu {threads} -E 1.0e-05 -o {output.out} --tblout {output.vog} {input.vog} {input.FAA} && "
         "gzip {input.FNA} > {output.FNA} && date) &> {log}"
 
 
@@ -115,7 +119,7 @@ rule phamb_RF:
     input:
         FNA=rules.hmmer.output.FNA,
         cluster=rules.vamb.output,
-        vog=os.path.join(RESULTS_DIR, "annotations/all.hmmVOG.tbl")
+        vog=rules.db_phamb.output.vog
     output:
         out=os.path.join(RESULTS_DIR, "phamb_output/vambbins_aggregated_annotation.txt"),
         bins=directory(os.path.join(RESULTS_DIR, "phamb_output/vamb_bins"))

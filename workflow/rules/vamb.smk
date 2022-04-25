@@ -7,7 +7,7 @@ Latest modification:
 
 # To run VAMB on viral output from VIBRANT
 
-localrules: phamb, concatenate, summarise_depth
+localrules: phamb, concatenate
 
 ############
 # Params

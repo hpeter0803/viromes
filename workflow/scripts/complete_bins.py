@@ -10,7 +10,7 @@ from Bio import SeqIO
 ##################################################
 # logger
 logging.basicConfig(
-    filename=str(snakemake.log),
+    filename=str(snakemake.log[0]),
     filemode="w",
     level=logging.DEBUG,
     format='[%(asctime)s] %(name)s %(levelname)s: %(message)s'
@@ -18,7 +18,7 @@ logging.basicConfig(
 logger = logging.getLogger(__file__)
 
 # Reading the data
-col=["contig_id"]
+col=['contig_id']
 data=pd.read_csv(snakemake.input.TSV, sep="\t", header=0, usecols=col).values
 
 # Saving each complete contig as a fasta file
