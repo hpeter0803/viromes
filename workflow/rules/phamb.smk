@@ -35,8 +35,8 @@ rule db_phamb:
     message:
         "Downloading the VOGdb and Micomplete Bacterial HMMs for PHAMB"
     shell:
-        "(date && wget -O $(dirname $(dirname {output})) http://fileshare.csb.univie.ac.at/vog/vog211/vog.hmm.tar.gz && "
-        "cd $(dirname $(dirname {output})) && tar -zxvf vog.hmm.tar.gz && cat vog.hmm/*.hmm > {output.vog} && "
+        "(date && wget -O $(dirname $(dirname {output.vog})) http://fileshare.csb.univie.ac.at/vog/vog211/vog.hmm.tar.gz && "
+        "cd $(dirname $(dirname {output.vog})) && tar -zxvf vog.hmm.tar.gz && cat vog.hmm/*.hmm > {output.vog} && "
         "wget -O $(dirname $(dirname {output.bact})) https://bitbucket.org/evolegiolab/micomplete/src/master/micomplete/share/Bact105.hmm && "
         "date) &> {log}"
 
@@ -73,8 +73,6 @@ rule prodigal:
         FAA=os.path.join(RESULTS_DIR, "prodigal/goodQual_final.faa")
     log:
         os.path.join(RESULTS_DIR, "logs/prodigal.log")
-
-
     threads:
         config["prodigal"]["threads"]
     conda:
