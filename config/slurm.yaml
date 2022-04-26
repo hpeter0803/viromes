@@ -75,7 +75,7 @@ prodigal:
   explicit: ""
 
 hmmer:
-  time: "00-04:00:00"
+  time: "01-00:00:00"
   partition: "bigmem"
   qos: "normal"
   nodes: 1
@@ -91,7 +91,7 @@ phamb_RF:
   explicit: ""
 
 complete_bins:
-  time: "00-02:00:00"
+  time: "00-04:00:00"
   partition: "batch"
   qos: "normal"
   nodes: 1
