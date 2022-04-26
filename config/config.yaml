@@ -69,7 +69,7 @@ prodigal:
   threads: 6
 
 hmmer:
-  threads: 6
+  threads: 8
 
 phamb:
   threads: 6

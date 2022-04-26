@@ -31,13 +31,14 @@ rule cat_bins:
     output:
         os.path.join(RESULTS_DIR, "phamb_output/all_bins.fna")
     params:
-        bins=os.path.join(RESULTS_DIR, "phamb_output/vamb_bins")
+        bins=os.path.join(RESULTS_DIR, "phamb_output/vamb_bins"),
+        complete=os.path.join(RESULTS_DIR, "phamb_output/vamb_bins_complete")
     log:
         os.path.join(RESULTS_DIR, "logs/cat_bins.log")
     message:
         "Concatenating all bins for CheckV"
     shell:
-        "(date && cat {params.bins}/*.fna > {output} && date) &> {log}"
+        "(date && cat {params.bins}/*.fna {params.complete}/*.fna > {output} && date) &> {log}"
 
 rule prep_checkv_phamb:
     input:

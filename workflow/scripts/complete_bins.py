@@ -21,9 +21,12 @@ logger = logging.getLogger(__file__)
 col=['contig_id']
 data=pd.read_csv(snakemake.input.TSV, sep="\t", header=0, usecols=col).values
 
+# Creating the output directory
+os.makedirs(snakemake.output[0])
+
 # Saving each complete contig as a fasta file
 with open(snakemake.input.FNA[0], "r") as ifile:
     for record in SeqIO.parse(ifile, "fasta"):
         if record.id in data:
-            with open(os.path.join(snakemake.params.bins, "%.fna" % record.id), "w") as ofile:
+            with open(os.path.join(snakemake.output[0], "%s.fna" % record.id), "w") as ofile:
                 SeqIO.write(record, ofile, "fasta")

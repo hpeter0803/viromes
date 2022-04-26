@@ -18,7 +18,7 @@ READS_DIR=config["reads_dir"]
 rule phamb:
     input:
         os.path.join(RESULTS_DIR, "phamb_output/vamb_bins"),
-        os.path.join(RESULTS_DIR, "complete_bins")
+        os.path.join(RESULTS_DIR, "phamb_output/vamb_bins_complete")
     output:
         touch("status/phamb.done")
 
@@ -141,11 +141,11 @@ rule complete_bins:
         TSV=rules.quality_filter.output.complete,
         FNA=rules.concatenate.output
     output:
-        directory(os.path.join(RESULTS_DIR, "complete_bins"))
+        directory(os.path.join(RESULTS_DIR, "phamb_output/vamb_bins_complete"))
     conda:
         os.path.join(ENV_DIR, "biopython.yaml")
     params:
-        bins=os.path.join(RESULTS_DIR, "phamb_output/vamb_bins"),
+#        bins=os.path.join(RESULTS_DIR, "phamb_output/vamb_bins"),
         predictions=os.path.join(RESULTS_DIR, "phamb_output/vambbins_aggregated_annotation.txt")
     log:
         os.path.join(RESULTS_DIR, "logs/complete_bins.log")
