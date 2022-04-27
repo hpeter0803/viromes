@@ -58,6 +58,14 @@ checkv:
   n: 1
   explicit: ""
 
+checkv_phamb:
+  time: "01-00:00:00"
+  partition: "bigmem"
+  qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
 deepvirfinder:
   time: "02-00:00:00"
   partition: "bigmem"
@@ -108,6 +116,30 @@ prep_checkv_phamb:
 
 quality_final:  
   time: "00-04:00:00"
+  partition: "bigmem"
+  qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+final_mapping_index:
+  time: "00-6:00:00"
+  partition: "bigmem"
+  qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+final_mapping:
+  time: "00-10:00:00"
+  partition: "bigmem"
+  qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+final_summarise_depth:
+  time: "00-6:00:00"
   partition: "bigmem"
   qos: "normal"
   nodes: 1

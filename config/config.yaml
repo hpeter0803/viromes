@@ -6,7 +6,7 @@
 
 # Next the following steps should be run
 # steps: ["identity", "taxonomy", "checkv", "phist", "spacepharer", "consensus", "amr"]
-steps: ["identity", "phamb"]
+steps: ["identity", "phamb", "taxonomy"]
 
 ############################################################
 # INPUT

@@ -17,7 +17,8 @@ READS_DIR=config["reads_dir"]
 
 rule final_checkv:
     input:
-        os.path.join(RESULTS_DIR, "checkv/phamb/complete_contigs.tsv")
+        os.path.join(RESULTS_DIR, "checkv/phamb/complete_contigs.tsv"),
+        os.path.join(RESULTS_DIR, "phamb_output/phamb_viruses_depth.txt")
     output:
         touch("status/final_checkv.done")
 
@@ -87,3 +88,70 @@ rule quality_filter_phamb:
     script:
         os.path.join(SRC_DIR, "checkVOutMod.R")
 
+
+############################
+# rules for final coverage #
+############################
+# BWA index
+rule final_mapping_index:
+    input:
+        rules.cat_bins.output
+    output:
+        expand(os.path.join(RESULTS_DIR, "mapping/phamb_viruses.{ext}"), ext=BWA_IDX_EXT)
+    log:
+        os.path.join(RESULTS_DIR, "logs/phamb_mapping.bwa.index.log")
+    threads:
+        config["bwa"]["threads"]
+    params:
+        idx_prefix=lambda wildcards, output: os.path.splitext(output[0])[0]
+    conda:
+        os.path.join(ENV_DIR, "bwa.yaml")
+    message:
+        "Mapping: BWA index for assembly mapping"
+    shell:
+        "(date && bwa index {input} -p {params.idx_prefix} && date) &> {log}"
+
+# Short reads
+rule final_mapping:
+    input:
+        r1=os.path.join(READS_DIR, "{sample}_mg.r1.preprocessed.fq"),
+        r2=os.path.join(READS_DIR, "{sample}_mg.r2.preprocessed.fq"),
+        idx=expand(os.path.join(RESULTS_DIR, "mapping/phamb_viruses.{ext}"), ext=BWA_IDX_EXT),
+    output:
+        os.path.join(RESULTS_DIR, "mapping/phamb_{sample}.sorted.bam")
+    log:
+        os.path.join(RESULTS_DIR, "logs/phamb_bwa.mem.{sample}.log")
+    threads:
+        config["bwa"]["map_threads"]
+    params:
+        asm=rules.cat_bins.output,
+        idx_prefix=lambda wildcards, input: os.path.splitext(input.idx[0])[0],
+        bam_prefix=lambda wildcards, output: os.path.splitext(output[0])[0],
+        chunk_size=config["samtools"]["sort"]["chunk_size"]
+    conda:
+        os.path.join(ENV_DIR, "bwa.yaml")
+    message:
+        "Mapping short reads w/ BWA for {wildcards.sample}"
+    shell:
+        "(date && "
+        "bwa mem -t {threads} {params.idx_prefix} {input.r1} {input.r2} | "
+        "samtools view -@ {threads} -SbT {params.asm} | "
+        "samtools sort -@ {threads} -m {params.chunk_size} -T {params.bam_prefix} -o {output} && "
+        "date) &> {log}"
+
+rule final_summarise_depth:
+    input:
+        expand(os.path.join(RESULTS_DIR, "mapping/phamb_{sample}.sorted.bam"), sample=SEDIMENTS)
+    output:
+        depth=os.path.join(RESULTS_DIR, "phamb_output/phamb_viruses_depth.txt"),
+        paired=os.path.join(RESULTS_DIR, "phamb_output/phamb_viruses_paired.txt")
+    log:
+        os.path.join(RESULTS_DIR, "logs/phamb_summarise_depth.log")
+    threads:
+        config["bwa"]["threads"]
+    conda:
+        os.path.join(ENV_DIR, "metabat2.yaml")
+    message:
+        "Getting coverage for all the samples"
+    shell:
+        "(date && jgi_summarize_bam_contig_depths --outputDepth {output.depth} --pairedContigs {output.paired} {input} && date) &> {log}"
