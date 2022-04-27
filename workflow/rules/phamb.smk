@@ -132,7 +132,7 @@ rule phamb_RF:
         "Running phamb on non-complete contigs"
     shell:
         "(date && gzip -c {input.orig_FNA} > {output.FNA} && "
-        "python {params.run_RF} {output.FNA} {input.cluster} $(dirname {input.vog}) $(dirname {output.out}) && date) &> {log}"
+        "python {params.run_RF} {output.FNA} {input.cluster} $(dirname {input.dvf}) $(dirname {output.out}) && date) &> {log}"
 
 
 # Binning COMPLETE viral contigs
