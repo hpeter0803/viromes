@@ -129,10 +129,11 @@ rule phamb_RF:
     params:
         run_RF=config["phamb"]["run_RF"]
     message:
-        "Running phamb on non-complete contigs"
+        "Running phamb on non-complete contigs. NOTE: have to enter submodules/workflows folder to run the correct phamb model"
     shell:
         "(date && gzip -c {input.orig_FNA} > {output.FNA} && "
-        "python {params.run_RF} {output.FNA} {input.cluster} $(dirname {input.dvf}) $(dirname {output.out}) && date) &> {log}"
+        "cd {params.run_RF} && "
+        "python mag_annotation/scripts/run_RF.py {output.FNA} {input.cluster} $(dirname {input.dvf}) $(dirname {output.out}) && date) &> {log}"
 
 
 # Binning COMPLETE viral contigs
