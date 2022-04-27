@@ -91,8 +91,7 @@ rule hmmer:
     output:
         out=os.path.join(RESULTS_DIR, "hmmer/output.txt"),
         vog=os.path.join(RESULTS_DIR, "annotations/all.hmmVOG.tbl"),
-        bact=os.path.join(RESULTS_DIR, "annotations/all.hmmMiComplete105.tbl"),
-        FNA=os.path.join(RESULTS_DIR, "annotations/goodQual_final.fna.gz")
+        bact=os.path.join(RESULTS_DIR, "annotations/all.hmmMiComplete105.tbl")
     log:
         os.path.join(RESULTS_DIR, "logs/hmmer.log")
     threads:
@@ -100,14 +99,12 @@ rule hmmer:
     conda:
         os.path.join(ENV_DIR, "hmmer.yaml")
     params:
-        vog=os.path.join(RESULTS_DIR, "dbs/phamb/AllVOG.hmm"),
-        
+        vog=os.path.join(RESULTS_DIR, "dbs/phamb/AllVOG.hmm") 
     message:
         "Searching for VOGs and Micompete Bact105 hmms"
     shell:
         "(date && hmmsearch --cpu {threads} -E 1.0e-05 -o {output.out} --tblout {output.bact} {input.bact} {input.FAA} && "
-        "hmmsearch --cpu {threads} -E 1.0e-05 -o {output.out} --tblout {output.vog} {input.vog} {input.FAA} && "
-        "gzip {input.FNA} > {output.FNA} && date) &> {log}"
+        "hmmsearch --cpu {threads} -E 1.0e-05 -o {output.out} --tblout {output.vog} {input.vog} {input.FAA} && date) &> {log}"
 
 
 ############
@@ -115,10 +112,12 @@ rule hmmer:
 ############
 rule phamb_RF:
     input:
-        FNA=rules.hmmer.output.FNA,
+        orig_FNA=rules.quality_final.output,
         cluster=rules.vamb.output,
-        vog=rules.db_phamb.output.vog
+        vog=rules.db_phamb.output.vog,
+        dvf=os.path.join(RESULTS_DIR, "annotations/all.DVF.predictions.txt")
     output:
+        FNA=os.path.join(RESULTS_DIR, "annotations/goodQual_final.fna.gz"),
         out=os.path.join(RESULTS_DIR, "phamb_output/vambbins_aggregated_annotation.txt"),
         bins=directory(os.path.join(RESULTS_DIR, "phamb_output/vamb_bins"))
     log:
@@ -132,7 +131,8 @@ rule phamb_RF:
     message:
         "Running phamb on non-complete contigs"
     shell:
-        "(date && python {params.run_RF} {input.FNA} {input.cluster} $(dirname {input.vog}) $(dirname {output.out}) && date) &> {log}"
+        "(date && gzip -c {input.orig_FNA} > {output.FNA} && "
+        "python {params.run_RF} {output.FNA} {input.cluster} $(dirname {input.vog}) $(dirname {output.out}) && date) &> {log}"
 
 
 # Binning COMPLETE viral contigs
