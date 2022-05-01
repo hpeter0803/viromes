@@ -107,4 +107,4 @@ rule taxonomy_coverage:
  
         # Merging coverage with merged TSV+taxonomy file
         final=pd.merge(merged, cov_edited, on="contigName")
-        final.to_csv(output.tax_cov, sep="\t", header=0, index=None)
+        final.to_csv(output.tax_cov, sep="\t", header=True, index=None)
