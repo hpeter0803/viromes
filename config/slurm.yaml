@@ -98,6 +98,14 @@ blast:
   n: 1
   explicit: ""
 
+blast_depolymerases:
+  time: "00-04:00:00"
+  partition: "batch"
+  qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
 phamb_RF:
   time: "01-00:00:00"
   partition: "bigmem"

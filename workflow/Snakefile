@@ -56,6 +56,14 @@ if "taxonomy" in STEPS:
         "status/imgvr3.done"
     ]
 
+# Depolymerases
+if "depolymerase" in STEPS:
+    include:
+        "rules/depolymerase.smk"
+    TARGETS += [
+        "status/depolymerase.done"
+    ]
+
 # Quality check
 if "checkv" in STEPS:
     include:
