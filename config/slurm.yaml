@@ -91,7 +91,7 @@ hmmer:
   explicit: ""  
 
 blast:
-  time: "00-08:00:00"
+  time: "01-00:00:00"
   partition: "batch"
   qos: "normal"
   nodes: 1
