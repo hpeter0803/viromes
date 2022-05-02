@@ -97,7 +97,7 @@ rule taxonomy_coverage:
         tsv['## UViG']=tsv['## UViG'].str.split('|').str[0]
 
         # Merging the TSV file with the Taxonomy information
-        merged=pd.merge(tsv, dbase, on="## UViG")
+        merged=pd.merge(tsv, dbase, on="## UViG", how="left")
 
         # Importing the gene coverage file
         cov=pd.read_csv(input.COV, sep="\t", header=0)
@@ -106,5 +106,5 @@ rule taxonomy_coverage:
         cov_edited=cov.loc[:, ~cov.columns.str.contains(".bam-var", case=True)]
  
         # Merging coverage with merged TSV+taxonomy file
-        final=pd.merge(merged, cov_edited, on="contigName")
+        final=pd.merge(merged, cov_edited, on="contigName", how="left")
         final.to_csv(output.tax_cov, sep="\t", header=True, index=None)

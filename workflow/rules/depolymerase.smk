@@ -8,6 +8,7 @@ Latest modification:
 # Runs DIAMOND against the Depolymerases database
 localrules: depolymerases 
 
+
 rule depolymerases:
     input:
         expand(os.path.join(RESULTS_DIR, "diamond/phamb_depolymerases.{type}"), type=["daa", "tsv"])
