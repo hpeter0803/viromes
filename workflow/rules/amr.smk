@@ -11,7 +11,7 @@ Latest modification:
 
 rule AMR:
     input:
-        expand(os.path.join(RESULTS_DIR, "rgi/{sample}/{sample}_rgi.txt"), sample=SAMPLES)
+        expand(os.path.join(RESULTS_DIR, "rgi/{sample}/{sample}_rgi.txt"), sample=SEDIMENTS)
     output:
         touch("status/AMR.done")
 

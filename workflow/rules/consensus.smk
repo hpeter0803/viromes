@@ -10,7 +10,7 @@ Latest modification:
 
 rule consensus:
     input:
-        expand(os.path.join(RESULTS_DIR, "checkv/{sample}/{sample}_goodQual_final.fna"), sample=SAMPLES)
+        expand(os.path.join(RESULTS_DIR, "checkv/{sample}/{sample}_goodQual_final.fna"), sample=SEDIMENTS)
     output:
         touch("status/consensus.done")
 

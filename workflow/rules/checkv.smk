@@ -11,7 +11,7 @@ localrules: db_checkv, prep_checkv, quality_filter
 
 rule checkv_all:
     input:
-        expand(os.path.join(RESULTS_DIR, "checkv/{sample}/{sample}_goodQual_final.fna"), sample=SAMPLES)
+        expand(os.path.join(RESULTS_DIR, "checkv/{sample}/{sample}_goodQual_final.fna"), sample=SEDIMENTS)
     output:
         touch("status/checkv.done")
 

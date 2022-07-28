@@ -15,7 +15,7 @@ steps: ["identity", "phamb", "taxonomy", "depolymerase"]
 work_dir: "/work/projects/nomis/assemblies/viromes"
 
 # Directory where the data is stored:
-data_dir: "/work/projects/nomis/assemblies/hard_copies"
+data_dir: "/work/projects/nomis/assemblies"
 
 # Directory where the sample reads are stored:
 reads_dir: "/work/projects/nomis/preprocessed_reads"
@@ -44,7 +44,7 @@ db_dir: "/work/projects/nomis/tools/IMGVR3"
 ##############################
 # Identity workflow, i.e. to identify phages etc. 
 vibrant:
-  threads: 8
+  threads: 12
   db: "/work/projects/nomis/tools/vibrant/VIBRANT"
 
 checkv:
@@ -52,39 +52,39 @@ checkv:
   threads: 4
 
 vamb:
-  threads: 8
+  threads: 16
   contigID: "_contig"
   length: 100
   minfasta: 1000
 
 checkm:
-  threads: 12
+  threads: 24
 
 dvf:
-  threads: 6
+  threads: 12
   length: 2000
   path: "/work/projects/nomis/assemblies/viromes/submodules/DeepVirFinder/dvf.py"
 
 prodigal:
-  threads: 6
+  threads: 8
 
 hmmer:
-  threads: 6
+  threads: 10
 
 phamb:
-  threads: 6
+  threads: 12
   run_RF: "/work/projects/nomis/assemblies/viromes/submodules/phamb/workflows"
 
 ##############################
 # Coverage #
 coverm:
   threads: 24
-  bigmem_threads: 8
+  bigmem_threads: 16
   tmp_dir: "/scratch/users/sbusi/tmp"
 
 bwa:
-  threads: 10
-  map_threads: 8
+  threads: 12
+  map_threads: 16
 
 # http://www.htslib.org/doc/samtools.html
 samtools:
@@ -97,7 +97,7 @@ samtools:
 # Taxonomy workflow
 # DIAMOND parameters
 diamond:
-  threads: 8
+  threads: 16
 
 ##############################
 # Phage-host identification
@@ -111,6 +111,6 @@ spacepharer:
 # AMR workflow
 # https://github.com/arpcard/rgi
 rgi:
-  threads: 8
+  threads: 12
   db_url: "https://card.mcmaster.ca/latest/data"
 

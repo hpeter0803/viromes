@@ -11,7 +11,7 @@ Latest modification:
 
 rule phist_all:
     input:
-        expand(os.path.join(RESULTS_DIR, "phist/{sample}/{filetype}.csv"), sample=SAMPLES, filetype=["common_kmers", "predictions"])
+        expand(os.path.join(RESULTS_DIR, "phist/{sample}/{filetype}.csv"), sample=SEDIMENTS, filetype=["common_kmers", "predictions"])
     output:
         touch("status/phist.done")
 

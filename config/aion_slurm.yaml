@@ -1,0 +1,163 @@
+__default__:
+  time: "0-01:00:00"
+  # partition: "batch"
+  # qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+  job-name: "nomis_virome.{rule}"
+
+
+# Viruses
+vibrant:
+  time: "00-04:00:00"
+  # partition: "bigmem"
+  # qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+mapping_index:
+  time: "00-10:00:00"
+  # partition: "bigmem"
+  # qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+mapping:
+  time: "00-10:00:00"
+  # partition: "bigmem"
+  # qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+summarise_depth:
+  time: "00-12:00:00"
+  # partition: "bigmem"
+  # qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+# Vamb, CheckV and Phamb
+vamb:
+  time: "00-12:00:00"
+  # partition: "bigmem"
+  # qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+checkv:
+  time: "01-00:00:00"
+  # partition: "bigmem"
+  # qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+checkv_phamb:
+  time: "01-00:00:00"
+  # partition: "bigmem"
+  # qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+deepvirfinder:
+  time: "02-00:00:00"
+  # partition: "bigmem"
+  # qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""  
+
+prodigal:
+  time: "00-04:00:00"
+  # partition: "bigmem"
+  # qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+hmmer:
+  time: "01-00:00:00"
+  # partition: "bigmem"
+  # qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""  
+
+blast:
+  time: "01-00:00:00"
+  # partition: "batch"
+  # qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+blast_depolymerases:
+  time: "00-04:00:00"
+  # partition: "batch"
+  # qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+phamb_RF:
+  time: "01-00:00:00"
+  # partition: "bigmem"
+  # qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+complete_bins:
+  time: "00-04:00:00"
+  # partition: "batch"
+  # qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+prep_checkv_phamb:
+  time: "01-00:00:00"
+  # partition: "bigmem"
+  # qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+quality_final:  
+  time: "00-04:00:00"
+  # partition: "bigmem"
+  # qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+final_mapping_index:
+  time: "00-6:00:00"
+  # partition: "bigmem"
+  # qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+final_mapping:
+  time: "00-10:00:00"
+  # partition: "bigmem"
+  # qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""
+
+final_summarise_depth:
+  time: "00-6:00:00"
+  # partition: "bigmem"
+  # qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: ""

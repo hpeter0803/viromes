@@ -11,7 +11,7 @@ Latest modification:
 
 rule spacepharer_all:
     input:
-        expand(os.path.join(RESULTS_DIR, "spacepharer/{sample}/{sample}_predictions.tsv"), sample=SAMPLES)
+        expand(os.path.join(RESULTS_DIR, "spacepharer/{sample}/{sample}_predictions.tsv"), sample=SEDIMENTS)
     output:
         touch("status/spacepharer.done")
 

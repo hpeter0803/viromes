@@ -12,7 +12,7 @@ localrules: viral_detection
 
 rule viral_detection:
     input:
-        expand(os.path.join(RESULTS_DIR, "vibrant_output/VIBRANT_{sample}/VIBRANT_phages_{sample}/{sample}.phages_combined.{type}"), sample=SAMPLES, type=["faa", "fna"])
+        expand(os.path.join(RESULTS_DIR, "vibrant_output/VIBRANT_{sample}/VIBRANT_phages_{sample}/{sample}.phages_combined.{type}"), sample=SEDIMENTS, type=["faa", "fna"])
     output:
         touch("status/viral_detection.done")
 
