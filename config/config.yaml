@@ -44,7 +44,7 @@ db_dir: "/work/projects/nomis/tools/IMGVR3"
 ##############################
 # Identity workflow, i.e. to identify phages etc. 
 vibrant:
-  threads: 8
+  threads: 12
   db: "/work/projects/nomis/tools/vibrant/VIBRANT"
 
 checkv:
@@ -83,7 +83,7 @@ coverm:
   tmp_dir: "/scratch/users/sbusi/tmp"
 
 bwa:
-  threads: 10
+  threads: 14
   map_threads: 8
 
 # http://www.htslib.org/doc/samtools.html

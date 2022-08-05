@@ -26,9 +26,9 @@ SMK_SMK="workflow/Snakefile"
 # config file
 SMK_CONFIG="config/config.yaml" # USER INPUT REQUIRED
 # slurm config file
-SMK_SLURM="config/aion_slurm.yaml"
+SMK_SLURM="config/slurm.yaml"
 # slurm cluster call
-SMK_CLUSTER="sbatch -p {cluster.partition} -q {cluster.qos} {cluster.explicit} -N {cluster.nodes} -n {cluster.n} -c {threads} -t {cluster.time} --job-name={cluster.job-name}"
+SMK_CLUSTER="sbatch -A project_gfs_metag -p {cluster.partition} -q {cluster.qos} {cluster.explicit} -N {cluster.nodes} -n {cluster.n} -c {threads} -t {cluster.time} --job-name={cluster.job-name}"
 
 
 ##############################

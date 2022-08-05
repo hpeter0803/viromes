@@ -35,6 +35,8 @@ rule vibrant:
         os.path.join(RESULTS_DIR, "logs/vibrant.{sample}.log")
     params:
         db=config['vibrant']['db']
+    wildcard_constraints:
+        sample="|".join(SEDIMENTS)
     message:
         "Running VIBRANT for {wildcards.sample}"
     shell:

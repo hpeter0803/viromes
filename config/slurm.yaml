@@ -10,7 +10,7 @@ __default__:
 
 # Viruses
 vibrant:
-  time: "00-04:00:00"
+  time: "01-04:00:00"
   partition: "bigmem"
   qos: "normal"
   nodes: 1

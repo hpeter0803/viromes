@@ -15,7 +15,7 @@ steps: ["identity", "phamb", "taxonomy", "depolymerase"]
 work_dir: "/work/projects/nomis/assemblies/viromes"
 
 # Directory where the data is stored:
-data_dir: "/work/projects/nomis/assemblies"
+data_dir: "/work/projects/nomis/assemblies/hard_copies"
 
 # Directory where the sample reads are stored:
 reads_dir: "/work/projects/nomis/preprocessed_reads"
@@ -44,12 +44,12 @@ db_dir: "/work/projects/nomis/tools/IMGVR3"
 ##############################
 # Identity workflow, i.e. to identify phages etc. 
 vibrant:
-  threads: 12
+  threads: 32
   db: "/work/projects/nomis/tools/vibrant/VIBRANT"
 
 checkv:
   db: "/work/projects/nomis/tools/checkv/checkv-db-v1.0"  # UPDATE for ESB-compute-01 or litcrit
-  threads: 4
+  threads: 16
 
 vamb:
   threads: 16

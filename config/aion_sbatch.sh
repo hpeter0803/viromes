@@ -29,7 +29,7 @@ SMK_CONFIG="config/aion_config.yaml" # USER INPUT REQUIRED
 SMK_SLURM="config/aion_slurm.yaml"
 # slurm cluster call
 # SMK_CLUSTER="sbatch -p {cluster.partition} -q {cluster.qos} {cluster.explicit} -N {cluster.nodes} -n {cluster.n} -c {threads} -t {cluster.time} --job-name={cluster.job-name}"
-SMK_CLUSTER="sbatch {cluster.explicit} -N {cluster.nodes} -n {cluster.n} -c {threads} -t {cluster.time} --job-name={cluster.job-name}"
+SMK_CLUSTER="sbatch -A project_gfs_metag {cluster.explicit} -N {cluster.nodes} -n {cluster.n} -c {threads} -t {cluster.time} --job-name={cluster.job-name}"
 
 
 ##############################

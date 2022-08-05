@@ -144,14 +144,15 @@ rule final_summarise_depth:
         expand(os.path.join(RESULTS_DIR, "mapping/phamb_{sample}.sorted.bam"), sample=SEDIMENTS)
     output:
         depth=os.path.join(RESULTS_DIR, "phamb_output/phamb_viruses_depth.txt"),
-        paired=os.path.join(RESULTS_DIR, "phamb_output/phamb_viruses_paired.txt")
+#        paired=os.path.join(RESULTS_DIR, "phamb_output/phamb_viruses_paired.txt")	# not produced by COVERM
     log:
         os.path.join(RESULTS_DIR, "logs/phamb_summarise_depth.log")
     threads:
         config["bwa"]["threads"]
     conda:
-        os.path.join(ENV_DIR, "metabat2.yaml")
+        os.path.join(ENV_DIR, "coverm.yaml")
     message:
         "Getting coverage for all the samples"
     shell:
-        "(date && jgi_summarize_bam_contig_depths --outputDepth {output.depth} --pairedContigs {output.paired} {input} && date) &> {log}"
+        "(date && coverm -b {input} -m trimmed_mean -t {threads} -o {output.depth} && date) &> {log}"
+#        "(date && jgi_summarize_bam_contig_depths --outputDepth {output.depth} --pairedContigs {output.paired} {input} && date) &> {log}"
