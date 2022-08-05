@@ -32,8 +32,8 @@ env_dir: "/work/projects/nomis/assemblies/viromes/envs"
 # Directory with the IMGVR3 database:
 db_dir: "/work/projects/nomis/tools/IMGVR3"
 
-# # Directory with the gene coverages:
-# cov_dir: "/mnt/esb-storage-01/NOMIS/ROCKS/rockforest_results/coverage"
+# Directory with the KEGG coverages:
+kegg_dir: "/work/projects/nomis/kegg"
 
 # # Directory with all the MAGs of interest
 # mags_dir: "/mnt/data/sbusi/viruses/results/mags"
