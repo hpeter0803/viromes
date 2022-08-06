@@ -28,8 +28,11 @@ TARGETS = []
 if "identity" in STEPS:
     include:
         "rules/viral_detection.smk"
+    include:
+        "rules/recA.smk"
     TARGETS += [
-        "status/viral_detection.done"
+        "status/viral_detection.done",
+        "status/recA.done"
     ]
 
 if "phamb" in STEPS:

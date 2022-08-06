@@ -38,6 +38,11 @@ kegg_dir: "/work/projects/nomis/kegg"
 # # Directory with all the MAGs of interest
 # mags_dir: "/mnt/data/sbusi/viruses/results/mags"
 
+# KEGG ID for the 'recA' gene
+recA:
+  gene: "K03553"
+
+
 ############################################################
 # TOOLS 
 
