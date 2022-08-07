@@ -117,6 +117,7 @@ rule final_mapping:
         r1=os.path.join(READS_DIR, "{sample}_mg.r1.preprocessed.fq"),
         r2=os.path.join(READS_DIR, "{sample}_mg.r2.preprocessed.fq"),
         idx=expand(os.path.join(RESULTS_DIR, "mapping/phamb_viruses.{ext}"), ext=BWA_IDX_EXT),
+        cov=os.path.join(RESULTS_DIR, "mapping/concatenated_viruses_depth.txt")	# Putting this here so the other BAM files are deleted prior to running this rule. Insufficient disk space otherwise.
     output:
         os.path.join(RESULTS_DIR, "mapping/phamb_{sample}.sorted.bam")
     log:

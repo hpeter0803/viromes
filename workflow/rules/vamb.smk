@@ -52,7 +52,7 @@ rule mapping:
         r2=os.path.join(READS_DIR, "{sample}_mg.r2.preprocessed.fq"),
         idx=expand(os.path.join(RESULTS_DIR, "mapping/concatenated_viruses.{ext}"), ext=BWA_IDX_EXT),
     output:
-        os.path.join(RESULTS_DIR, "mapping/{sample}.sorted.bam")
+        temp(os.path.join(RESULTS_DIR, "mapping/{sample}.sorted.bam"))
     log:
         os.path.join(RESULTS_DIR, "logs/bwa.mem.{sample}.log")
     threads:
