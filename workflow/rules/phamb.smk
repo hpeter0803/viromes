@@ -115,6 +115,7 @@ rule phamb_RF:
         orig_FNA=rules.quality_final.output,
         cluster=rules.vamb.output,
         vog=rules.db_phamb.output.vog,
+        tbl_vog=rules.hmmer.output.vog,
         dvf=os.path.join(RESULTS_DIR, "annotations/all.DVF.predictions.txt")
     output:
         FNA=os.path.join(RESULTS_DIR, "annotations/goodQual_final.fna.gz"),

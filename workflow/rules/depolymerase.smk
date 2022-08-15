@@ -22,7 +22,7 @@ rule depolymerases:
 # Making DIAMOND db
 rule makedb_depolymerases:
     input:
-        IMG=os.path.join(DATA_DIR, "viromes/Depolymerase/depolymerases_clean.fasta")
+        IMG=os.path.join(DATA_DIR, "../viromes/Depolymerase/depolymerases_clean.fasta")
     output:
         DB=os.path.join(RESULTS_DIR, "diamond/depolymerase_clean.dmnd")
     log:

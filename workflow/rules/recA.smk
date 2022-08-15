@@ -36,7 +36,7 @@ rule recA_extract:
         "Extracting the 'recA' gene coverage from all {wildcards.sample}"
     shell:
         "(date && "
-        """if ! grep '{params.gene}' {input.kegg}; then echo 'NA'; fi | awk -v myfile={{wildcards.sample}} -vOFS="\\t" '{{print myfile,$NF}}' > {output.recA} && """
+        """if ! grep '{params.gene}' {input.kegg}; then echo 'NA'; fi | awk -v myfile='{wildcards.sample}' -vOFS="\\t" '{{print myfile,$NF}}' > {output.recA} && """
         "date) &> {log}"
 
 rule cat_recA:
