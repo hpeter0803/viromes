@@ -89,7 +89,7 @@ coverm:
 
 bwa:
   threads: 14
-  map_threads: 8
+  map_threads: 4
 
 # http://www.htslib.org/doc/samtools.html
 samtools:
