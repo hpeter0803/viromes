@@ -155,5 +155,5 @@ rule final_summarise_depth:
     message:
         "Getting coverage for all the samples"
     shell:
-        "(date && coverm -b {input} -m trimmed_mean -t {threads} -o {output.depth} && date) &> {log}"
+        "(date && coverm contig -b {input} -m trimmed_mean -t {threads} -o {output.depth} && date) &> {log}"
 #        "(date && jgi_summarize_bam_contig_depths --outputDepth {output.depth} --pairedContigs {output.paired} {input} && date) &> {log}"
