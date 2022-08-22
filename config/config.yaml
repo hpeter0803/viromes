@@ -5,7 +5,7 @@
 # steps: ["imp"]  # RUN THIS FIRST and launch IMP3 outside of the workflow
 
 # Next the following steps should be run
-# steps: ["identity", "taxonomy", "checkv", "phist", "spacepharer", "consensus", "amr"]
+# steps: ["identity", "phamb", "taxonomy", "checkv", "depolymerase"]     # "phist", "spacepharer", "consensus", "amr"]
 steps: ["identity", "phamb", "taxonomy", "depolymerase"]
 
 ############################################################
