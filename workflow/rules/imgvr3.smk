@@ -91,7 +91,7 @@ rule taxonomy_coverage:
 
         # Importing the DIAMOND BLAST output
         tsv=pd.read_csv(input.TSV, sep="\t", header=None)
-        tsv.columns=["contigName", "## UViG", "pident", "length", "mismatch", "gapopen", "qstart", "qend", "sstart", "send", "evalue", "bitscore", "qlen", "slen"]
+        tsv.columns=["Contig", "## UViG", "pident", "length", "mismatch", "gapopen", "qstart", "qend", "sstart", "send", "evalue", "bitscore", "qlen", "slen"]
 
         # Removing extra string from UViG IDs
         tsv['## UViG']=tsv['## UViG'].str.split('|').str[0]
@@ -106,5 +106,5 @@ rule taxonomy_coverage:
         cov_edited=cov.loc[:, ~cov.columns.str.contains(".bam-var", case=True)]
  
         # Merging coverage with merged TSV+taxonomy file
-        final=pd.merge(merged, cov_edited, on="contigName", how="left")
+        final=pd.merge(merged, cov_edited, on="Contig", how="left")
         final.to_csv(output.tax_cov, sep="\t", header=True, index=None)
