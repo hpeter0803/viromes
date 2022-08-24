@@ -6,7 +6,7 @@
 
 # Next the following steps should be run
 # steps: ["identity", "phamb", "taxonomy", "checkv", "depolymerase"]     # "phist", "spacepharer", "consensus", "amr"]
-steps: ["identity", "phamb", "taxonomy", "depolymerase"]
+steps: ["identity", "phamb", "taxonomy", "depolymerase", "phist"]
 
 ############################################################
 # INPUT
@@ -35,8 +35,8 @@ db_dir: "/work/projects/nomis/tools/IMGVR3"
 # Directory with the KEGG coverages:
 kegg_dir: "/work/projects/nomis/kegg"
 
-# # Directory with all the MAGs of interest
-# mags_dir: "/mnt/data/sbusi/viruses/results/mags"
+# Directory with all the MAGs of interest
+mags_dir: "/scratch/users/sbusi/collected_bins_20220720"
 
 # KEGG ID for the 'recA' gene
 recA:

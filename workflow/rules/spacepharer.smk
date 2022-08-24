@@ -21,7 +21,7 @@ rule spacepharer_all:
 #######################################
 rule minced:
     input:
-        MAGS=glob_wildcards(MAGS_DIR,"{sample}/run1/Binning/selected_DASTool_bins/{name}.fa").name
+        MAGS=glob_wildcards(MAGS_DIR,"{name}.fa").name
     output:
         CRISPRCas=os.path.join(RESULTS_DIR, "spacepharer/{sample}/targetSetDB/crisprCas/{MAGS}.txt")
     conda:
@@ -65,7 +65,7 @@ rule spacepharer_dbs:
 
 rule spacepharer:
     input:
-        DB=os.path.join(RESULTS_DIR, "spacepharer/{sample}/targetSetDB/")
+        DB=os.path.join(RESULTS_DIR, "spacepharer/{sample}/targetSetDB/"),
         CRISPR=rules.minced.output.CRISPRCas
     output:
         os.path.join(RESULTS_DIR, "spacepharer/{sample}/{sample}_predictions.tsv")

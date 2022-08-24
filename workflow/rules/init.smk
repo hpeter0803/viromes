@@ -44,7 +44,7 @@ DB_DIR=config["db_dir"]
 KEGG_DIR=config["kegg_dir"]
 # FAA_DIR=config["faa_dir"]
 # COV_DIR=config["cov_dir"]
-# MAGS_DIR=config["mags_dir"]
+MAGS_DIR=config["mags_dir"]
 
 ##############################
 # Steps
