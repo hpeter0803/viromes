@@ -7,7 +7,7 @@ Latest modification:
 
 # To run VAMB on viral output from VIBRANT
 
-localrules: cat_bins, final_checkv, prep_checkv_phamb, quality_filter_phamb
+localrules: cat_bins, cat_dereplicated_bins, final_checkv, prep_checkv_phamb, quality_filter_phamb
 
 ############
 # Params
@@ -45,21 +45,35 @@ rule dereplicate:
     input:
         rules.cat_bins.output
     output:
-        os.path.join(RESULTS_DIR, "drep/phamb/all_bins.fna")
+        os.path.join(RESULTS_DIR, "vrhyme/all_bins/vRhyme_best_bins_fasta/vRhyme_bin_1.fasta")
     conda:
         os.path.join(ENV_DIR, "vrhyme.yaml")
     log:
-        os.path.join(RESULTS_DIR, "logs/checkv_prep.log")
+        os.path.join(RESULTS_DIR, "logs/dereplicate_vrhyme.log")
+    threads:
+        config["vrhyme"]["threads"]
     message:
-        "Editing all bins fasta to remove spaces"
+        "Dereplicating viral bins with vRhyme"
     shell:
         "(date && "
-        "vRhyme -i input_fasta -t threads -o output_folder/ --derep_only --method longest && "
+        "vRhyme -i {input} -t {threads} -o $(dirname $(dirname {output})) --derep_only --method longest && "
         "date) &> {log}"    
+
+rule cat_dereplicated_bins:
+    input:
+        rules.dereplicate.output
+    output:
+        os.path.join(RESULTS_DIR, "vrhyme/dereplicated_bins.fna")
+    log:
+        os.path.join(RESULTS_DIR, "logs/cat_dereplicated_bins.log")
+    message:
+        "Concatenating dereplicated bins for CheckV"
+    shell:
+        "(date && cat $(dirname {input})/*.fasta > {output} && date) &> {log}"
 
 rule prep_checkv_phamb:
     input:
-        rules.cat_bins.output
+        rules.cat_dereplicated_bins.output
     output:
         os.path.join(RESULTS_DIR, "checkv/phamb/all_bins.fna")
     conda:
@@ -111,7 +125,7 @@ rule quality_filter_phamb:
 # BWA index
 rule final_mapping_index:
     input:
-        rules.cat_bins.output
+        rules.cat_dereplicated_bins.output
     output:
         expand(os.path.join(RESULTS_DIR, "mapping/phamb_viruses.{ext}"), ext=BWA_IDX_EXT)
     log:
@@ -141,7 +155,7 @@ rule final_mapping:
     threads:
         config["bwa"]["map_threads"]
     params:
-        asm=rules.cat_bins.output,
+        asm=rules.cat_dereplicated_bins.output,
         idx_prefix=lambda wildcards, input: os.path.splitext(input.idx[0])[0],
         bam_prefix=lambda wildcards, output: os.path.splitext(output[0])[0],
         chunk_size=config["samtools"]["sort"]["chunk_size"]
