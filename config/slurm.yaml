@@ -122,6 +122,14 @@ complete_bins:
   n: 1
   explicit: ""
 
+dereplicate:
+  time: "00-10:00:00"
+  partition: "bigmem"
+  qos: "normal"
+  nodes: 1
+  n: 1
+  explicit: "" 
+
 prep_checkv_phamb:
   time: "01-00:00:00"
   partition: "bigmem"

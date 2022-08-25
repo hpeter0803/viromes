@@ -41,6 +41,22 @@ rule cat_bins:
     shell:
         "(date && cat {params.bins}/*.fna {params.complete}/*.fna > {output} && date) &> {log}"
 
+rule dereplicate:
+    input:
+        rules.cat_bins.output
+    output:
+        os.path.join(RESULTS_DIR, "drep/phamb/all_bins.fna")
+    conda:
+        os.path.join(ENV_DIR, "vrhyme.yaml")
+    log:
+        os.path.join(RESULTS_DIR, "logs/checkv_prep.log")
+    message:
+        "Editing all bins fasta to remove spaces"
+    shell:
+        "(date && "
+        "vRhyme -i input_fasta -t threads -o output_folder/ --derep_only --method longest && "
+        "date) &> {log}"    
+
 rule prep_checkv_phamb:
     input:
         rules.cat_bins.output

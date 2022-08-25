@@ -76,6 +76,9 @@ prodigal:
 hmmer:
   threads: 6
 
+vrhyme:
+  threads: 6
+  
 phamb:
   threads: 6
   run_RF: "/work/projects/nomis/assemblies/viromes/submodules/phamb/workflows"

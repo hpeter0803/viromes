@@ -1,0 +1,4 @@
+channels:
+ - bioconda
+dependencies:
+ - vrhyme=1.1.0
