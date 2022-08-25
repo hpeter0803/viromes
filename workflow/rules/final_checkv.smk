@@ -55,8 +55,8 @@ rule dereplicate:
     message:
         "Dereplicating viral bins with vRhyme"
     shell:
-        "(date && "
-        "vRhyme -i {input} -t {threads} -o $(dirname $(dirname {output})) --derep_only --method longest && "
+        "(date && rm -vrf $(dirname $(dirname {output})) && "
+        "vRhyme -i {input} -t {threads} -o $(dirname $(dirname $(dirname {output})))/all_bins --derep_only --method longest && "
         "date) &> {log}"    
 
 rule cat_dereplicated_bins:
