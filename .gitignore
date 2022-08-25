@@ -1,3 +1,6 @@
+**workflow/.DS_Store*
+**.DS_Store*
+**/*.DS_Store
 **/.snakemake/
 **/__pycache__/
 slurm-*.out
