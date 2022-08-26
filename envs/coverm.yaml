@@ -4,3 +4,4 @@ channels:
   - defaults
 dependencies:
  - coverm=0.6.1
+ - minimap2=2.21

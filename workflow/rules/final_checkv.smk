@@ -57,6 +57,7 @@ rule dereplicate:
     shell:
         "(date && rm -vrf $(dirname $(dirname {output})) && "
         "vRhyme -i {input} -t {threads} -o $(dirname $(dirname $(dirname {output})))/all_bins --derep_only --method longest && "
+        "if [-f {output}]; then echo 'Dereplication worked'; else cp -v {input} $(dirname $(dirname $(dirname {output})))/dereplicated_bins.fna; fi && "
         "date) &> {log}"    
 
 rule cat_dereplicated_bins:
@@ -66,6 +67,8 @@ rule cat_dereplicated_bins:
         os.path.join(RESULTS_DIR, "vrhyme/dereplicated_bins.fna")
     log:
         os.path.join(RESULTS_DIR, "logs/cat_dereplicated_bins.log")
+    params:
+        os.path.join(RESULTS_DIR, "vrhyme/all_bins/vRhyme_best_bins_fasta/vRhyme_bin_1.fasta")
     message:
         "Concatenating dereplicated bins for CheckV"
     shell:
@@ -122,57 +125,96 @@ rule quality_filter_phamb:
 ############################
 # rules for final coverage #
 ############################
-# BWA index
-rule final_mapping_index:
-    input:
-        rules.cat_dereplicated_bins.output
-    output:
-        expand(os.path.join(RESULTS_DIR, "mapping/phamb_viruses.{ext}"), ext=BWA_IDX_EXT)
-    log:
-        os.path.join(RESULTS_DIR, "logs/phamb_mapping.bwa.index.log")
-    threads:
-        config["bwa"]["threads"]
-    params:
-        idx_prefix=lambda wildcards, output: os.path.splitext(output[0])[0]
-    conda:
-        os.path.join(ENV_DIR, "bwa.yaml")
-    message:
-        "Mapping: BWA index for assembly mapping"
-    shell:
-        "(date && bwa index {input} -p {params.idx_prefix} && date) &> {log}"
-
-# Short reads
 rule final_mapping:
     input:
         r1=os.path.join(READS_DIR, "{sample}_mg.r1.preprocessed.fq"),
         r2=os.path.join(READS_DIR, "{sample}_mg.r2.preprocessed.fq"),
-        idx=expand(os.path.join(RESULTS_DIR, "mapping/phamb_viruses.{ext}"), ext=BWA_IDX_EXT),
-        cov=os.path.join(RESULTS_DIR, "mapping/concatenated_viruses_depth.txt")	# Putting this here so the other BAM files are deleted prior to running this rule. Insufficient disk space otherwise.
+        asm=rules.cat_dereplicated_bins.output,
+        cov=os.path.join(RESULTS_DIR, "mapping/concatenated_viruses_depth.txt") # Putting this here so the other BAM files are deleted prior to running this rule. Insufficient disk space otherwise.
     output:
-        os.path.join(RESULTS_DIR, "mapping/phamb_{sample}.sorted.bam")
+        os.path.join(RESULTS_DIR, "coverm_mapping/dereplicated_bins.fna.{sample}_mg.r1.preprocessed.fq.bam")
     log:
-        os.path.join(RESULTS_DIR, "logs/phamb_bwa.mem.{sample}.log")
+        os.path.join(RESULTS_DIR, "logs/mapping.{sample}.log")
     threads:
         config["bwa"]["map_threads"]
-    params:
-        asm=rules.cat_dereplicated_bins.output,
-        idx_prefix=lambda wildcards, input: os.path.splitext(input.idx[0])[0],
-        bam_prefix=lambda wildcards, output: os.path.splitext(output[0])[0],
-        chunk_size=config["samtools"]["sort"]["chunk_size"]
+    conda:
+        os.path.join(ENV_DIR, "coverm.yaml")
+    message:
+        "Mapping short reads w/ CoverM for {wildcards.sample}"
+    shell:
+        "(date && "
+        "coverm make -r {input.asm} -t {threads} -o $(dirname {output}) --discard-unmapped -c {input.r1} {input.r2} && "
+        "date) &> {log}"
+
+# BAM index
+rule final_mapping_index:
+    input:
+        os.path.join(RESULTS_DIR, "coverm_mapping/dereplicated_bins.fna.{sample}_mg.r1.preprocessed.fq.bam")
+    output:
+        os.path.join(RESULTS_DIR, "coverm_mapping/dereplicated_bins.fna.{sample}_mg.r1.preprocessed.fq.bam.bai")
+    log:
+        os.path.join(RESULTS_DIR, "logs/mapping.{sample}.index.log")
+    threads:
+        config["bwa"]["threads"]
     conda:
         os.path.join(ENV_DIR, "bwa.yaml")
     message:
-        "Mapping short reads w/ BWA for {wildcards.sample}"
+        "Creating samtools index for BAM files"
     shell:
-        "(date && "
-        "bwa mem -t {threads} {params.idx_prefix} {input.r1} {input.r2} | "
-        "samtools view -@ {threads} -SbT {params.asm} | "
-        "samtools sort -@ {threads} -m {params.chunk_size} -T {params.bam_prefix} -o {output} && "
-        "date) &> {log}"
+        "(date && samtools index {iinput} && date) &> {log}"
+
+## BWA index
+#rule final_mapping_index:
+#    input:
+#        rules.cat_dereplicated_bins.output
+#    output:
+#        expand(os.path.join(RESULTS_DIR, "mapping/phamb_viruses.{ext}"), ext=BWA_IDX_EXT)
+#    log:
+#        os.path.join(RESULTS_DIR, "logs/phamb_mapping.bwa.index.log")
+#    threads:
+#        config["bwa"]["threads"]
+#    params:
+#        idx_prefix=lambda wildcards, output: os.path.splitext(output[0])[0]
+#    conda:
+#        os.path.join(ENV_DIR, "bwa.yaml")
+#    message:
+#        "Mapping: BWA index for assembly mapping"
+#    shell:
+#        "(date && bwa index {input} -p {params.idx_prefix} && date) &> {log}"
+#
+## Short reads
+#rule final_mapping:
+#    input:
+#        r1=os.path.join(READS_DIR, "{sample}_mg.r1.preprocessed.fq"),
+#        r2=os.path.join(READS_DIR, "{sample}_mg.r2.preprocessed.fq"),
+#        idx=expand(os.path.join(RESULTS_DIR, "mapping/phamb_viruses.{ext}"), ext=BWA_IDX_EXT),
+#        cov=os.path.join(RESULTS_DIR, "mapping/concatenated_viruses_depth.txt")	# Putting this here so the other BAM files are deleted prior to running this rule. Insufficient disk space otherwise.
+#    output:
+#        os.path.join(RESULTS_DIR, "mapping/phamb_{sample}.sorted.bam")
+#    log:
+#        os.path.join(RESULTS_DIR, "logs/phamb_bwa.mem.{sample}.log")
+#    threads:
+#        config["bwa"]["map_threads"]
+#    params:
+#        asm=rules.cat_dereplicated_bins.output,
+#        idx_prefix=lambda wildcards, input: os.path.splitext(input.idx[0])[0],
+#        bam_prefix=lambda wildcards, output: os.path.splitext(output[0])[0],
+#        chunk_size=config["samtools"]["sort"]["chunk_size"]
+#    conda:
+#        os.path.join(ENV_DIR, "bwa.yaml")
+#    message:
+#        "Mapping short reads w/ BWA for {wildcards.sample}"
+#    shell:
+#        "(date && "
+#        "bwa mem -t {threads} {params.idx_prefix} {input.r1} {input.r2} | "
+#        "samtools view -@ {threads} -SbT {params.asm} | "
+#        "samtools sort -@ {threads} -m {params.chunk_size} -T {params.bam_prefix} -o {output} && "
+#        "date) &> {log}"
 
 rule final_summarise_depth:
     input:
-        expand(os.path.join(RESULTS_DIR, "mapping/phamb_{sample}.sorted.bam"), sample=SEDIMENTS)
+        expand(os.path.join(RESULTS_DIR, "coverm_mapping/dereplicated_bins.fna.{sample}_mg.r1.preprocessed.fq.bam"), sample=SEDIMENTS)
+#        expand(os.path.join(RESULTS_DIR, "mapping/phamb_{sample}.sorted.bam"), sample=SEDIMENTS)
     output:
         depth=os.path.join(RESULTS_DIR, "phamb_output/phamb_viruses_depth.txt"),
 #        paired=os.path.join(RESULTS_DIR, "phamb_output/phamb_viruses_paired.txt")	# not produced by COVERM
