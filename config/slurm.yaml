@@ -155,7 +155,7 @@ final_mapping_index:
   explicit: ""
 
 final_mapping:
-  time: "00-10:00:00"
+  time: "00-05:00:00"
   partition: "bigmem"
   qos: "normal"
   nodes: 1

@@ -87,7 +87,7 @@ phamb:
 # Coverage #
 coverm:
   threads: 24
-  bigmem_threads: 8
+  bigmem_threads: 4
   tmp_dir: "/scratch/users/sbusi/tmp"
 
 bwa:
