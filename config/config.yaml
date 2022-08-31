@@ -5,8 +5,9 @@
 # steps: ["imp"]  # RUN THIS FIRST and launch IMP3 outside of the workflow
 
 # Next the following steps should be run
-# steps: ["identity", "phamb", "taxonomy", "checkv", "depolymerase"]     # "phist", "spacepharer", "consensus", "amr"]
-steps: ["identity", "phamb", "taxonomy", "depolymerase", "phist"]
+# steps: ["identity", "phamb", "taxonomy", "checkv", "depolymerase", "final_map"]     # "phist", "spacepharer", "consensus", "amr"]
+# steps: ["identity", "phamb", "taxonomy", "depolymerase", "final_map", "phist"]
+steps : ["final_map", "taxonomy"]
 
 ############################################################
 # INPUT
@@ -87,7 +88,7 @@ phamb:
 # Coverage #
 coverm:
   threads: 24
-  bigmem_threads: 4
+  bigmem_threads: 6
   tmp_dir: "/scratch/users/sbusi/tmp"
 
 bwa:

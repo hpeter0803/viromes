@@ -28,7 +28,8 @@ rule final_checkv:
 #############################################
 rule cat_bins:
     input:
-        rules.phamb_RF.output.out
+#        rules.phamb_RF.output.out
+        os.path.join(RESULTS_DIR, "phamb_output/vambbins_aggregated_annotation.txt")
     output:
         os.path.join(RESULTS_DIR, "phamb_output/all_bins.fna")
     params:
@@ -100,7 +101,7 @@ rule checkv_phamb:
     log:
         os.path.join(RESULTS_DIR, "logs/checkv.log")
     params:
-        DB=rules.db_checkv.output
+        DB=os.path.join(RESULTS_DIR, "dbs/checkv-db-v1.0/README.txt")
     message:
         "Running CheckV"
     shell:
@@ -136,7 +137,7 @@ rule final_mapping:
     log:
         os.path.join(RESULTS_DIR, "logs/mapping.{sample}.log")
     threads:
-        config["bwa"]["map_threads"]
+        config["coverm"]["bigmem_threads"]
     conda:
         os.path.join(ENV_DIR, "coverm.yaml")
     message:
