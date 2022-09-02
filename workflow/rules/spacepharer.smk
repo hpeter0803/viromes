@@ -24,7 +24,7 @@ rule minced:
     input:
         BIN=os.path.join(MAGS_DIR,"{mag}.fa")
     output:
-        CRISPRCas=os.path.join(RESULTS_DIR, "spacepharer/targetSetDB/crisprCas/{mag}.txt")
+        CRISPRCas=os.path.join(RESULTS_DIR, "minced/{mag}.txt")
     conda:
         os.path.join(ENV_DIR, "spacepharer.yaml")
     log:
@@ -69,7 +69,7 @@ rule spacepharer_dbs:
 rule spacepharer:
     input:
         DB=os.path.join(RESULTS_DIR, "spacepharer/targetSetDB/"),
-        CRISPR=os.path.join(RESULTS_DIR, "spacepharer/targetSetDB/crisprCas/{mag}.txt")
+        CRISPR=os.path.join(RESULTS_DIR, "minced/{mag}.txt")
     output:
         os.path.join(RESULTS_DIR, "spacepharer/{mag}/spacepharer_predictions.tsv")
     conda:
