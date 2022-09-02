@@ -8,10 +8,11 @@ Latest modification:
 # To run SpacePHARER on viral contigs output from CheckV and MAGs
 # Purpose: to identify Phage hossts
 
+MAGS=glob_wildcards(os.path.join(MAGS_DIR,"{name}.fa")).name
 
 rule spacepharer_all:
     input:
-        os.path.join(RESULTS_DIR, "spacepharer/spacepharer_predictions.tsv")
+        expand(os.path.join(RESULTS_DIR, "spacepharer/{mag}/spacepharer_predictions.tsv"), mag=MAGS)
     output:
         touch("status/spacepharer.done")
 
@@ -21,20 +22,22 @@ rule spacepharer_all:
 #######################################
 rule minced:
     input:
-        MAGS=glob_wildcards(MAGS_DIR,"{name}.fa").name
+        BIN=os.path.join(MAGS_DIR,"{mag}.fa")
     output:
-        CRISPRCas=os.path.join(RESULTS_DIR, "spacepharer/targetSetDB/crisprCas/{MAGS}.txt")
+        CRISPRCas=os.path.join(RESULTS_DIR, "spacepharer/targetSetDB/crisprCas/{mag}.txt")
     conda:
         os.path.join(ENV_DIR, "spacepharer.yaml")
     log:
-        os.path.join(RESULTS_DIR, "logs/minced.log")
+        os.path.join(RESULTS_DIR, "logs/minced.{mag}.log")
     params:
         TMPDIR=os.path.join(RESULTS_DIR, "tmp/minced")
+    wildcard_constraints:
+        mag="|".join(MAGS)
     message:
         "Getting cripsr-cas from MAGs"
     shell:
         "(date && "
-        "minced -spacers -minNR 2 {input.MAGs} {output.CRISPRCas} && "
+        "minced -spacers -minNR 2 {input.BIN} {output.CRISPRCas} && "
         "date) &> {log}"
 
 
@@ -66,13 +69,13 @@ rule spacepharer_dbs:
 rule spacepharer:
     input:
         DB=os.path.join(RESULTS_DIR, "spacepharer/targetSetDB/"),
-        CRISPR=rules.minced.output.CRISPRCas
+        CRISPR=os.path.join(RESULTS_DIR, "spacepharer/targetSetDB/crisprCas/{mag}.txt")
     output:
-        os.path.join(RESULTS_DIR, "spacepharer/spacepharer_predictions.tsv")
+        os.path.join(RESULTS_DIR, "spacepharer/{mag}/spacepharer_predictions.tsv")
     conda:
         os.path.join(ENV_DIR, "spacepharer.yaml")
     log:
-        os.path.join(RESULTS_DIR, "logs/spacepharer.log")
+        os.path.join(RESULTS_DIR, "logs/spacepharer.{mag}.log")
     threads:
         config["spacepharer"]["threads"]
     params:
