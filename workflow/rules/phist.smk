@@ -32,10 +32,11 @@ rule phist:
     threads:
         config["phist"]["threads"]
     params:
-        MAGS=os.path.join(MAGS_DIR)
+        MAGS=os.path.join(MAGS_DIR),
+        PHIST=os.path.join(SUBMODULES, "phist/phist.py")
     message:
         "Running PHiSt on dereplicated bins"
     shell:
         "(date && mkdir $(dirname {output.KMERS}) && "
-        "python phist.py -t {threads} {input.FNA} {params.MAGS} {output.KMERS} {output.PRED} && "
+        "python {params.PHIST} -t {threads} {input.FNA} {params.MAGS} {output.KMERS} {output.PRED} && "
         "date) &> {log}"

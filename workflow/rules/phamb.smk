@@ -55,7 +55,7 @@ rule deepvirfinder:
     threads:
         config["dvf"]["threads"]
     params:
-        dvf=config["dvf"]["path"],
+        dvf=os.path.join(SUBMODULES, "DeepVirFinder/dvf.py")	# config["dvf"]["path"],
         length=config["dvf"]["length"]
     conda:
         os.path.join(ENV_DIR, "dvf.yaml")
@@ -128,7 +128,7 @@ rule phamb_RF:
     conda:
         os.path.join(ENV_DIR, "phamb.yaml")
     params:
-        run_RF=config["phamb"]["run_RF"]
+        run_RF=os.path.join(SUBMODULES, "phamb/workflows")	# config["phamb"]["run_RF"]
     message:
         "Running phamb on non-complete contigs. NOTE: have to enter submodules/workflows folder to run the correct phamb model"
     shell:
