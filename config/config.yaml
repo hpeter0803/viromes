@@ -69,7 +69,7 @@ checkm:
 dvf:
   threads: 6
   length: 2000
-  path: "/work/projects/nomis/assemblies/viromes/submodules/DeepVirFinder/dvf.py"
+  path: "/work/projects/nomis/assemblies/viromes/deps/DeepVirFinder/dvf.py"
 
 prodigal:
   threads: 6
@@ -82,7 +82,7 @@ vrhyme:
   
 phamb:
   threads: 6
-  run_RF: "/work/projects/nomis/assemblies/viromes/submodules/phamb/workflows"
+  run_RF: "/work/projects/nomis/assemblies/viromes/deps/phamb/workflows"
 
 ##############################
 # Coverage #

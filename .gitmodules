@@ -4,3 +4,6 @@
 [submodule "deps/phist"]
 	path = deps/phist
 	url = https://github.com/refresh-bio/PHIST
+[submodule "deps/phamb"]
+	path = deps/phamb
+	url = https://github.com/RasmussenLab/phamb
