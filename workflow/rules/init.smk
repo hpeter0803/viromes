@@ -13,7 +13,7 @@ import pandas as pd
 # Paths
 SRC_DIR = srcdir("../scripts")
 ENV_DIR = srcdir("../envs")
-# SUBMODULES= srcdir("../../submodules")
+SUBMODULES= srcdir("../../deps")
 
 ##############################
 # Dependencies 
