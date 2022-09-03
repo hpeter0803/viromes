@@ -48,8 +48,8 @@ rule spacepharer_dbs:
     input:
         FNA=os.path.join(RESULTS_DIR, "vrhyme/dereplicated_bins.fna")
     output:
-        REV=directory(os.path.join(RESULTS_DIR, "spacepharer/targetSetDB_rev")),
-        FWD=directory(os.path.join(RESULTS_DIR, "spacepharer/targetSetDB"))
+        REV=os.path.join(RESULTS_DIR, "spacepharer/targetSetDB_rev.index"),
+        FWD=os.path.join(RESULTS_DIR, "spacepharer/targetSetDB.index")
     conda:
         os.path.join(ENV_DIR, "spacepharer.yaml")
     log:
@@ -61,14 +61,14 @@ rule spacepharer_dbs:
     message:
         "Creating SpacePHARER forward and reverese DBs for dereplicated bins"
     shell:
-        "(date && mkdir -p $(dirname $(dirname {output.REV}))/tmp && "
-        "spacepharer createsetdb {input.FNA} {output.REV} {params.TMPDIR} --threads {threads} --reverse-fragments 1 --compressed 1 && "
-        "spacepharer createsetdb {input.FNA} {output.FWD} {params.TMPDIR} --threads {threads} --compressed 1 && "
+        "(date && mkdir -p $(dirname {params.TMPDIR}) && "
+        "spacepharer createsetdb {input.FNA} $(echo {output.REV} | sed 's@.index@@g') {params.TMPDIR} --threads {threads} --reverse-fragments 1 --compressed 1 && "
+        "spacepharer createsetdb {input.FNA} $(echo {output.FWD} | sed 's@.index@@g') {params.TMPDIR} --threads {threads} --compressed 1 && "
         "date) &> {log}"
 
 rule spacepharer:
     input:
-        DB=os.path.join(RESULTS_DIR, "spacepharer/targetSetDB/"),
+        DB=os.path.join(RESULTS_DIR, "spacepharer/targetSetDB.index"),
         CRISPR=os.path.join(RESULTS_DIR, "minced/{mag}.txt")
     output:
         os.path.join(RESULTS_DIR, "spacepharer/{mag}/spacepharer_predictions.tsv")
@@ -85,6 +85,6 @@ rule spacepharer:
         "Running SpacePHARER on dereplicated bins and Crispr-cas"
     shell:
         "(date && "
-        "spacepharer easy-predict {input.CRISPR} $(dirname {input.DB}) {output} --threads {threads} --remove-tmp-files --fmt 0 && "
+        "spacepharer easy-predict {input.CRISPR} $(echo {input.DB} | sed 's@.index@@g') {output} --threads {threads} --remove-tmp-files --fmt 0 && "
         "date) &> {log}"
 
