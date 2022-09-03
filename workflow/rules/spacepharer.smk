@@ -61,7 +61,7 @@ rule spacepharer_dbs:
     message:
         "Creating SpacePHARER forward and reverese DBs for dereplicated bins"
     shell:
-        "(date && "
+        "(date && mkdir -p $(dirname $(dirname {output.REV}))/tmp && "
         "spacepharer createsetdb {input.FNA} {output.REV} {params.TMPDIR} --threads {threads} --reverse-fragments 1 --compressed 1 && "
         "spacepharer createsetdb {input.FNA} {output.FWD} {params.TMPDIR} --threads {threads} --compressed 1 && "
         "date) &> {log}"

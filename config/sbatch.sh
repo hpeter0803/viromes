@@ -18,7 +18,7 @@
 # conda env name
 SMK_ENV="snakemake" # USER INPUT REQUIRED
 # number of cores for snakemake
-SMK_CORES=48
+SMK_CORES=70
 # number of jobs for snakemake
 SMK_JOBS=8
 # snakemake file

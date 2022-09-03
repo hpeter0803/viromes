@@ -38,5 +38,5 @@ rule phist:
         "Running PHiSt on dereplicated bins"
     shell:
 #        "(date && mkdir $(dirname {output.KMERS}) && "
-        "(date && python {params.PHIST} -t {threads} {input.FNA} {params.MAGS} {output.KMERS} {output.PRED} && "
+        "(date && python3 {params.PHIST} -t {threads} {input.FNA} {params.MAGS} {output.KMERS} {output.PRED} && "
         "date) &> {log}"
