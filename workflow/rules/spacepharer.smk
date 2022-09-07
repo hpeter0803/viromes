@@ -79,12 +79,12 @@ rule spacepharer:
     threads:
         config["spacepharer"]["threads"]
     params:
-        TMPDIR=temp(os.path.join(RESULTS_DIR, "tmp/spacepharer/{mag}")),
+        TMPDIR=os.path.join(RESULTS_DIR, "tmp/spacepharer/{mag}"),
         #CRISPR=os.path.join(RESULTS_DIR, "spacepharer/targetSetDB/crisprCas/dereplicated_bins.txt")
     message:
         "Running SpacePHARER on dereplicated bins and Crispr-cas"
     shell:
         "(date && mkdir -p {params.TMPDIR} && "
         "spacepharer easy-predict {input.CRISPR} {input.DB} {output} {params.TMPDIR} --threads {threads} --fmt 0 --report-pam 0 && "
-        "date) &> {log}"
+        "rm -rf {params.TMPDIR} && date) &> {log}"
 
