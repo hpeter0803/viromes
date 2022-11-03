@@ -12,7 +12,8 @@ MAGS=glob_wildcards(os.path.join(MAGS_DIR,"{name}.fa")).name
 
 rule spacepharer_all:
     input:
-        expand(os.path.join(RESULTS_DIR, "spacepharer/{mag}/spacepharer_predictions.tsv"), mag=MAGS)
+#        expand(os.path.join(RESULTS_DIR, "spacepharer/{mag}/spacepharer_predictions.tsv"), mag=MAGS)
+        os.path.join(RESULTS_DIR, "spacepharer/spacepharer_predictions.tsv")
     output:
         touch("status/spacepharer.done")
 
@@ -69,17 +70,21 @@ rule spacepharer_dbs:
 rule spacepharer:
     input:
         DB=os.path.join(RESULTS_DIR, "spacepharer/targetSetDB"),
-        CRISPR=os.path.join(RESULTS_DIR, "minced/{mag}.txt")
+#        CRISPR=os.path.join(RESULTS_DIR, "minced/{mag}.txt")
+        CRISPR=expand(os.path.join(RESULTS_DIR, "minced/{mag}.txt"), mag=MAGS)
     output:
-        os.path.join(RESULTS_DIR, "spacepharer/{mag}/spacepharer_predictions.tsv")
+#        os.path.join(RESULTS_DIR, "spacepharer/{mag}/spacepharer_predictions.tsv")
+        os.path.join(RESULTS_DIR, "spacepharer/spacepharer_predictions.tsv")
     conda:
         os.path.join(ENV_DIR, "spacepharer.yaml")
     log:
-        os.path.join(RESULTS_DIR, "logs/spacepharer.{mag}.log")
+#        os.path.join(RESULTS_DIR, "logs/spacepharer.{mag}.log")
+        os.path.join(RESULTS_DIR, "logs/spacepharer.log")
     threads:
         config["spacepharer"]["threads"]
     params:
-        TMPDIR=os.path.join(RESULTS_DIR, "tmp/spacepharer/{mag}"),
+#        TMPDIR=os.path.join(RESULTS_DIR, "tmp/spacepharer/{mag}"),
+        TMPDIR=os.path.join(RESULTS_DIR, "tmp/spacepharer"),
         #CRISPR=os.path.join(RESULTS_DIR, "spacepharer/targetSetDB/crisprCas/dereplicated_bins.txt")
     message:
         "Running SpacePHARER on dereplicated bins and Crispr-cas"
