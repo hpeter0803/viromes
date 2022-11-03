@@ -37,7 +37,7 @@ db_dir: "/work/projects/nomis/tools/IMGVR3"
 kegg_dir: "/work/projects/nomis/kegg"
 
 # Directory with all the MAGs of interest
-mags_dir: "/scratch/users/sbusi/collected_bins_20220720"
+mags_dir: "/scratch/users/gmichoud/nomis_mags_all/results/Bins/finalBins" # "/scratch/users/sbusi/collected_bins_20220720"
 
 # KEGG ID for the 'recA' gene
 recA:
