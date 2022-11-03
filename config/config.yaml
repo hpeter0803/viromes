@@ -114,7 +114,7 @@ phist:
   threads: 24
 
 spacepharer:
-  threads: 6
+  threads: 2
 
 ##############################
 # AMR workflow
