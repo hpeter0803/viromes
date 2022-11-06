@@ -111,7 +111,7 @@ diamond:
 ##############################
 # Phage-host identification
 phist:
-  threads: 24
+  threads: 8
 
 spacepharer:
   threads: 2
