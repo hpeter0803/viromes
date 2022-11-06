@@ -25,11 +25,11 @@ rule phist_input:
     input:
         FNA=os.path.join(RESULTS_DIR, "vrhyme/dereplicated_bins.fna")
     output:
-        FNA=FNA=os.path.join(RESULTS_DIR, "vrhyme/phist_input/dereplicated_bins.fna") 
+        FNA=os.path.join(RESULTS_DIR, "vrhyme/phist_input/dereplicated_bins.fna") 
     message:
         "PHIST can only handle folders which have the bins and nothing else; so symlinking"
     shell:
-        "(date && ln -vs {input.FNA} {output} && date)
+        "(date && ln -vs {input.FNA} {output} && date)"
 
 rule phist:
     input:
