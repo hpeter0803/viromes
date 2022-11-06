@@ -9,6 +9,8 @@ Latest modification:
 # Purpose: to identify Phage hossts
 
 
+localrules: phist_input
+
 rule phist_all:
     input:
         expand(os.path.join(RESULTS_DIR, "phist/{filetype}.csv"), sample=SEDIMENTS, filetype=["common_kmers", "predictions"])
@@ -19,9 +21,19 @@ rule phist_all:
 #######################################
 # rules for Phage-Host identification #
 #######################################
-rule phist:
+rule phist_input:
     input:
         FNA=os.path.join(RESULTS_DIR, "vrhyme/dereplicated_bins.fna")
+    output:
+        FNA=FNA=os.path.join(RESULTS_DIR, "vrhyme/phist_input/dereplicated_bins.fna") 
+    message:
+        "PHIST can only handle folders which have the bins and nothing else; so symlinking"
+    shell:
+        "(date && ln -vs {input.FNA} {output} && date)
+
+rule phist:
+    input:
+        FNA=os.path.join(RESULTS_DIR, "vrhyme/phist_input/dereplicated_bins.fna")
     output:
         KMERS=os.path.join(RESULTS_DIR, "phist/common_kmers.csv"),
         PRED=os.path.join(RESULTS_DIR, "phist/predictions.csv")
