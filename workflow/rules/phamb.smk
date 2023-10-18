@@ -55,7 +55,7 @@ rule deepvirfinder:
     threads:
         config["dvf"]["threads"]
     params:
-        dvf=os.path.join(SUBMODULES, "DeepVirFinder/dvf.py")	# config["dvf"]["path"],
+        dvf=os.path.join(SUBMODULES, "DeepVirFinder/dvf.py"),	# config["dvf"]["path"],
         length=config["dvf"]["length"]
     conda:
         os.path.join(ENV_DIR, "dvf.yaml")

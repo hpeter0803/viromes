@@ -63,14 +63,6 @@ if "taxonomy" in STEPS:
         "status/kaiju.done"
     ]
 
-# Quality check
-if "checkv" in STEPS:
-    include:
-        "rules/checkv.smk"
-    TARGETS += [
-        "status/checkv.done"
-    ]
-
 # Phage-host interactions
 if "phist" in STEPS:
     include:
