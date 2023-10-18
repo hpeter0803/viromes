@@ -7,7 +7,7 @@
 # Next the following steps should be run
 # steps: ["identity", "phamb", "taxonomy", "checkv", "depolymerase", "final_map"]     # "phist", "spacepharer", "consensus", "amr"]
 # steps: ["identity", "phamb", "taxonomy", "depolymerase", "final_map", "phist"]
-steps : ["identity", "phamb", "taxonomy",0 "final_map", "phist", "iphop"]        # toRun: "phist"
+steps : ["identity", "phamb", "taxonomy", "final_map", "phist", "iphop"]        # toRun: "phist"
 
 ############################################################
 # INPUT
