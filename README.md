@@ -1,4 +1,4 @@
-# Virome workflows - ENSEMBLE project
+# Virome workflow - ENSEMBLE project
 
 ## Setup
 ### Conda
@@ -37,9 +37,3 @@ snakemake --use-conda --cores 36 --jobs 3 -s workflows/Snakefile -rp
 ./config/sbatch.sh 	# works only on a SLURM-enabled system
 ```
 
-## Notes:
-- Database downloaded from the IMG/VR3 [website](https://genome.jgi.doe.gov/portal/pages/dynamicOrganismDownload.jsf?organism=IMG_VR)
-- File unzipped as follows:
-```bash
-gunzip -c IMGVR_all_proteins.faa.gz > IMGVR_all_proteins.faa
-```

@@ -79,6 +79,14 @@ if "phist" in STEPS:
         "status/phist.done"
     ]
 
+if "iphop" in STEPS:
+    include:
+        "rules/iphop.smk"
+    TARGETS += [
+        "status/iphop.done"
+    ]
+
+
 
 # No targets
 if len(TARGETS) == 0:

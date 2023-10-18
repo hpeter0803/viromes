@@ -116,9 +116,14 @@ phist:
 spacepharer:
   threads: 2
 
+iphop:
+  threads: 25
+
+##############################
+# Taxonomy workflow
 kaiju:
   threads: 8
-  
+
 ##############################
 # AMR workflow
 # https://github.com/arpcard/rgi
