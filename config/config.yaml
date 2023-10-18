@@ -116,6 +116,9 @@ phist:
 spacepharer:
   threads: 2
 
+kaiju:
+  threads: 8
+  
 ##############################
 # AMR workflow
 # https://github.com/arpcard/rgi

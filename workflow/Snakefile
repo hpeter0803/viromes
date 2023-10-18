@@ -58,17 +58,9 @@ if "final_map" in STEPS:
 # Taxonomy
 if "taxonomy" in STEPS:
     include:
-        "rules/imgvr3.smk"
+        "rules/kaiju.smk"
     TARGETS += [
-        "status/imgvr3.done"
-    ]
-
-# Depolymerases
-if "depolymerase" in STEPS:
-    include:
-        "rules/depolymerase.smk"
-    TARGETS += [
-        "status/depolymerase.done"
+        "status/kaiju.done"
     ]
 
 # Quality check
@@ -87,28 +79,6 @@ if "phist" in STEPS:
         "status/phist.done"
     ]
 
-if "spacepharer" in STEPS:
-    include:
-        "rules/spacepharer.smk"
-    TARGETS += [
-        "status/spacepharer.done"
-    ]
-
-# Consensus phage-host
-if "consensus" in STEPS:
-    include:
-        "rules/consensus.smk"
-    TARGETS += [
-        "status/consensus.done"
-    ]
-
-# AMR
-if "amr" in STEPS:
-    include:
-        "rules/amr.smk"
-    TARGETS += [
-        "status/AMR.done"
-    ]
 
 # No targets
 if len(TARGETS) == 0:

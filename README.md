@@ -1,9 +1,7 @@
-#  Virome workflows - NOMIS and ENSEMBLE projects
-- Pipeline for annotating viral sequences based on the IMG/VR3 database
-- [IMGVR3](https://genome.jgi.doe.gov/portal/IMG_VR/IMG_VR.home.html)
+# Virome workflows - ENSEMBLE project
 
-# Setup
-## Conda
+## Setup
+### Conda
 
 [Conda user guide](https://docs.conda.io/projects/conda/en/latest/user-guide/index.html)
 
@@ -26,7 +24,7 @@ Create the main `snakemake` environment
 conda env create -f envs/requirements.yaml -n "snakemake"
 ```
 
-# Running the Pipeline
+## Running the Pipeline
 Adjust the `config/config.yaml` file with the appropriate paths
 - Do the following:
 
