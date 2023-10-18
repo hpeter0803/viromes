@@ -23,16 +23,20 @@ Create the main `snakemake` environment
 
 ```bash
 # create venv
-conda env create -f requirements.yaml -n "snakemake"
+conda env create -f envs/requirements.yaml -n "snakemake"
 ```
 
 # Running the Pipeline
-Adjust the `imgvr3_config.yaml` file with the appropriate paths
+Adjust the `config/config.yaml` file with the appropriate paths
 - Do the following:
 
 ```bash
 # Running the Pipeline
-snakemake --use-conda --cores 36 --jobs 3 -s imgvr_snakefile -rp
+snakemake --use-conda --cores 36 --jobs 3 -s workflows/Snakefile -rp	
+
+# (OR)
+
+./config/sbatch.sh 	# works only on a SLURM-enabled system
 ```
 
 ## Notes:

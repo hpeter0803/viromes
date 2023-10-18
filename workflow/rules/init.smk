@@ -13,7 +13,7 @@ import pandas as pd
 # Paths
 SRC_DIR = srcdir("../scripts")
 ENV_DIR = srcdir("../envs")
-# SUBMODULES= srcdir("../../submodules")
+SUBMODULES= srcdir("../../deps")
 
 ##############################
 # Dependencies 
@@ -37,11 +37,13 @@ workdir:
 ##############################
 # Relevant directories
 DATA_DIR=config["data_dir"]
+READS_DIR=config["reads_dir"]
 RESULTS_DIR=config["results_dir"]
 ENV_DIR=config["env_dir"]
 DB_DIR=config["db_dir"]
-FAA_DIR=config["faa_dir"]
-COV_DIR=config["cov_dir"]
+KEGG_DIR=config["kegg_dir"]
+# FAA_DIR=config["faa_dir"]
+# COV_DIR=config["cov_dir"]
 MAGS_DIR=config["mags_dir"]
 
 ##############################
@@ -51,6 +53,8 @@ STEPS = config["steps"]
 
 ##############################
 # Input
-SAMPLES = [line.strip() for line in open("config/sample_list.txt").readlines()]
+SAMPLES = [line.strip() for line in open("config/all_samples.txt").readlines()]
+SEDIMENTS = [line.strip() for line in open("config/all_samples.txt").readlines()]
+# SEDIMENTS = [line.strip() for line in open("config/sediment_list.txt").readlines()]
 # SAMPLES=[line.strip() for line in open("config/sample_list.txt", 'r')]
 

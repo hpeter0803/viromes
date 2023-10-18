@@ -1,0 +1,9 @@
+[submodule "deps/DeepVirFinder"]
+	path = deps/DeepVirFinder
+	url = https://github.com/jessieren/DeepVirFinder
+[submodule "deps/phist"]
+	path = deps/phist
+	url = https://github.com/refresh-bio/PHIST
+[submodule "deps/phamb"]
+	path = deps/phamb
+	url = https://github.com/RasmussenLab/phamb

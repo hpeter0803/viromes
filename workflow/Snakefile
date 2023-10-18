@@ -28,8 +28,31 @@ TARGETS = []
 if "identity" in STEPS:
     include:
         "rules/viral_detection.smk"
+    include:
+        "rules/recA.smk"
     TARGETS += [
-        "status/viral_detection.done"
+        "status/viral_detection.done",
+        "status/recA.done"
+    ]
+
+if "phamb" in STEPS:
+    include:
+        "rules/vibrant_checkv.smk"
+    include:
+        "rules/vamb.smk"
+    include:
+        "rules/phamb.smk"
+    TARGETS += [
+        "status/vibrant_checkv.done",
+        "status/vamb.done",
+        "status/phamb.done",
+    ]
+
+if "final_map" in STEPS:
+    include:
+        "rules/final_checkv.smk"
+    TARGETS += [
+        "status/final_checkv.done"
     ]
 
 # Taxonomy
@@ -38,6 +61,14 @@ if "taxonomy" in STEPS:
         "rules/imgvr3.smk"
     TARGETS += [
         "status/imgvr3.done"
+    ]
+
+# Depolymerases
+if "depolymerase" in STEPS:
+    include:
+        "rules/depolymerase.smk"
+    TARGETS += [
+        "status/depolymerase.done"
     ]
 
 # Quality check

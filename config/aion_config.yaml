@@ -5,9 +5,8 @@
 # steps: ["imp"]  # RUN THIS FIRST and launch IMP3 outside of the workflow
 
 # Next the following steps should be run
-# steps: ["identity", "phamb", "taxonomy", "checkv", "depolymerase", "final_map"]     # "phist", "spacepharer", "consensus", "amr"]
-# steps: ["identity", "phamb", "taxonomy", "depolymerase", "final_map", "phist"]
-steps : ["spacepharer", "phist"]        # toRun: "phist"
+# steps: ["identity", "taxonomy", "checkv", "phist", "spacepharer", "consensus", "amr"]
+steps: ["identity", "phamb", "taxonomy", "depolymerase"]
 
 ############################################################
 # INPUT
@@ -33,16 +32,11 @@ env_dir: "/work/projects/nomis/assemblies/viromes/envs"
 # Directory with the IMGVR3 database:
 db_dir: "/work/projects/nomis/tools/IMGVR3"
 
-# Directory with the KEGG coverages:
-kegg_dir: "/work/projects/nomis/kegg"
+# # Directory with the gene coverages:
+# cov_dir: "/mnt/esb-storage-01/NOMIS/ROCKS/rockforest_results/coverage"
 
-# Directory with all the MAGs of interest
-mags_dir: "/scratch/users/gmichoud/nomis_mags_all/results/Bins/finalBins" # "/scratch/users/sbusi/collected_bins_20220720"
-
-# KEGG ID for the 'recA' gene
-recA:
-  gene: "K03553"
-
+# # Directory with all the MAGs of interest
+# mags_dir: "/mnt/data/sbusi/viruses/results/mags"
 
 ############################################################
 # TOOLS 
@@ -50,50 +44,47 @@ recA:
 ##############################
 # Identity workflow, i.e. to identify phages etc. 
 vibrant:
-  threads: 12
+  threads: 32
   db: "/work/projects/nomis/tools/vibrant/VIBRANT"
 
 checkv:
   db: "/work/projects/nomis/tools/checkv/checkv-db-v1.0"  # UPDATE for ESB-compute-01 or litcrit
-  threads: 4
+  threads: 16
 
 vamb:
-  threads: 8
+  threads: 16
   contigID: "_contig"
   length: 100
   minfasta: 1000
 
 checkm:
-  threads: 12
+  threads: 24
 
 dvf:
-  threads: 6
+  threads: 12
   length: 2000
-  path: "/work/projects/nomis/assemblies/viromes/deps/DeepVirFinder/dvf.py"
+  path: "/work/projects/nomis/assemblies/viromes/submodules/DeepVirFinder/dvf.py"
 
 prodigal:
-  threads: 6
+  threads: 8
 
 hmmer:
-  threads: 6
+  threads: 10
 
-vrhyme:
-  threads: 6
-  
 phamb:
-  threads: 6
-  run_RF: "/work/projects/nomis/assemblies/viromes/deps/phamb/workflows"
+  threads: 12
+  run_RF: "/work/projects/nomis/assemblies/viromes/submodules/phamb/workflows"
 
 ##############################
 # Coverage #
 coverm:
   threads: 24
-  bigmem_threads: 8
+  bigmem_threads: 16
   tmp_dir: "/scratch/users/sbusi/tmp"
 
 bwa:
-  threads: 14
-  map_threads: 4
+  threads: 12
+  map_threads: 16
 
 # http://www.htslib.org/doc/samtools.html
 samtools:
@@ -106,20 +97,20 @@ samtools:
 # Taxonomy workflow
 # DIAMOND parameters
 diamond:
-  threads: 8
+  threads: 16
 
 ##############################
 # Phage-host identification
 phist:
-  threads: 8
+  threads: 24
 
 spacepharer:
-  threads: 2
+  threads: 24
 
 ##############################
 # AMR workflow
 # https://github.com/arpcard/rgi
 rgi:
-  threads: 8
+  threads: 12
   db_url: "https://card.mcmaster.ca/latest/data"
 

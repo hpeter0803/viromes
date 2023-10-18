@@ -8,10 +8,12 @@ Latest modification:
 # To run SpacePHARER on viral contigs output from CheckV and MAGs
 # Purpose: to identify Phage hossts
 
+MAGS=glob_wildcards(os.path.join(MAGS_DIR,"{name}.fa")).name
 
 rule spacepharer_all:
     input:
-        expand(os.path.join(RESULTS_DIR, "spacepharer/{sample}/{sample}_predictions.tsv"), sample=SAMPLES)
+#        expand(os.path.join(RESULTS_DIR, "spacepharer/{mag}/spacepharer_predictions.tsv"), mag=MAGS)
+        os.path.join(RESULTS_DIR, "spacepharer/spacepharer_predictions.tsv")
     output:
         touch("status/spacepharer.done")
 
@@ -21,20 +23,22 @@ rule spacepharer_all:
 #######################################
 rule minced:
     input:
-        MAGS=glob_wildcards(MAGS_DIR,"{sample}/run1/Binning/selected_DASTool_bins/{name}.fa").name
+        BIN=os.path.join(MAGS_DIR,"{mag}.fa")
     output:
-        CRISPRCas=os.path.join(RESULTS_DIR, "spacepharer/{sample}/targetSetDB/crisprCas/{MAGS}.txt")
+        CRISPRCas=os.path.join(RESULTS_DIR, "minced/{mag}.txt")
     conda:
         os.path.join(ENV_DIR, "spacepharer.yaml")
     log:
-        os.path.join(RESULTS_DIR, "logs/minced.{sample}.log")
+        os.path.join(RESULTS_DIR, "logs/minced.{mag}.log")
     params:
-        TMPDIR=os.path.join(RESULTS_DIR, "tmp/{sample}")
+        TMPDIR=os.path.join(RESULTS_DIR, "tmp/minced")
+    wildcard_constraints:
+        mag="|".join(MAGS)
     message:
-        "Getting cripsr-cas from {wildcards.sample} MAGs"
+        "Getting cripsr-cas from MAGs"
     shell:
         "(date && "
-        "minced -spacers -minNR 2 {input.MAGs} {output.CRISPRCas} && "
+        "minced -spacers -minNR 2 {input.BIN} {output.CRISPRCas} && "
         "date) &> {log}"
 
 
@@ -43,45 +47,49 @@ rule minced:
 #######################################
 rule spacepharer_dbs:
     input:
-        FNA=os.path.join(RESULTS_DIR, "checkv/{sample}/{sample}_goodQual_final.fna")
+        FNA=os.path.join(RESULTS_DIR, "vrhyme/dereplicated_bins.fna")
     output:
-        REV=directory(os.path.join(RESULTS_DIR, "spacepharer/{sample}/targetSetDB_rev")),
-        FWD=directory(os.path.join(RESULTS_DIR, "spacepharer/{sample}/targetSetDB"))
+        REV=os.path.join(RESULTS_DIR, "spacepharer/targetSetDB_rev"),
+        FWD=os.path.join(RESULTS_DIR, "spacepharer/targetSetDB")
     conda:
         os.path.join(ENV_DIR, "spacepharer.yaml")
     log:
-        os.path.join(RESULTS_DIR, "logs/spacepharer_dbs.{sample}.log")
+        os.path.join(RESULTS_DIR, "logs/spacepharer_dbs.log")
     threads:
         config["spacepharer"]["threads"]
     params:
-        TMPDIR=os.path.join(RESULTS_DIR, "tmp/{sample}")
+        TMPDIR=os.path.join(RESULTS_DIR, "tmp/spacepharer_dbs")
     message:
-        "Creating SpacePHARER forward and reverese DBs for {wildcards.sample}"
+        "Creating SpacePHARER forward and reverese DBs for dereplicated bins"
     shell:
-        "(date && "
+        "(date && mkdir -p $(dirname {params.TMPDIR}) && "
         "spacepharer createsetdb {input.FNA} {output.REV} {params.TMPDIR} --threads {threads} --reverse-fragments 1 --compressed 1 && "
         "spacepharer createsetdb {input.FNA} {output.FWD} {params.TMPDIR} --threads {threads} --compressed 1 && "
         "date) &> {log}"
 
 rule spacepharer:
     input:
-        DB=os.path.join(RESULTS_DIR, "spacepharer/{sample}/targetSetDB/")
-        CRISPR=rules.minced.output.CRISPRCas
+        DB=os.path.join(RESULTS_DIR, "spacepharer/targetSetDB"),
+#        CRISPR=os.path.join(RESULTS_DIR, "minced/{mag}.txt")
+        CRISPR=expand(os.path.join(RESULTS_DIR, "minced/{mag}.txt"), mag=MAGS)
     output:
-        os.path.join(RESULTS_DIR, "spacepharer/{sample}/{sample}_predictions.tsv")
+#        os.path.join(RESULTS_DIR, "spacepharer/{mag}/spacepharer_predictions.tsv")
+        os.path.join(RESULTS_DIR, "spacepharer/spacepharer_predictions.tsv")
     conda:
         os.path.join(ENV_DIR, "spacepharer.yaml")
     log:
-        os.path.join(RESULTS_DIR, "logs/spacepharer.{sample}.log")
+#        os.path.join(RESULTS_DIR, "logs/spacepharer.{mag}.log")
+        os.path.join(RESULTS_DIR, "logs/spacepharer.log")
     threads:
         config["spacepharer"]["threads"]
     params:
-        TMPDIR=os.path.join(RESULTS_DIR, "tmp/{sample}"),
-        #CRISPR=os.path.join(RESULTS_DIR, "spacepharer/{sample}/targetSetDB/crisprCas/{sample}.txt")
+#        TMPDIR=os.path.join(RESULTS_DIR, "tmp/spacepharer/{mag}"),
+        TMPDIR=os.path.join(RESULTS_DIR, "tmp/spacepharer"),
+        #CRISPR=os.path.join(RESULTS_DIR, "spacepharer/targetSetDB/crisprCas/dereplicated_bins.txt")
     message:
-        "Running SpacePHARER on {wildcards.sample}"
+        "Running SpacePHARER on dereplicated bins and Crispr-cas"
     shell:
-        "(date && "
-        "spacepharer easy-predict {input.CRISPR} $(dirname {input.DB}) {output} --threads {threads} --remove-tmp-files --fmt 0 && "
-        "date) &> {log}"
+        "(date && mkdir -p {params.TMPDIR} && "
+        "spacepharer easy-predict {input.CRISPR} {input.DB} {output} {params.TMPDIR} --threads {threads} --fmt 0 --report-pam 0 && "
+        "rm -rf {params.TMPDIR} && date) &> {log}"
 

@@ -6,13 +6,13 @@ Latest modification:
 """
 
 # Taxonomic classification of VIRAL sequences identified via VIBRANT and checkV
-# Runs DIAMOND against the IMG/VR3 viral taxonomy database and merges with the coverage per sample
+# Runs DIAMOND against the IMG/VR3 viral taxonomy database and merges with the coverage per viral contig
 
 
 rule taxonomy:
     input:
-        expand(os.path.join(RESULTS_DIR, "diamond/{sample}.{type}"), sample=SAMPLES, type=["daa", "tsv"]),
-        expand(os.path.join(RESULTS_DIR, "taxa_cov/{sample}_IMGVR_taxonomy_coverage.txt"), sample=SAMPLES)    
+        expand(os.path.join(RESULTS_DIR, "diamond/phamb_viruses.{type}"), type=["daa", "tsv"]),
+        os.path.join(RESULTS_DIR, "taxa_cov/phamb_viruses_IMGVR_taxonomy_coverage.txt")
     output:
         touch("status/imgvr3.done")
 
@@ -45,13 +45,13 @@ rule makedb:
 # BLAST against IMGVR3 using DIAMOND
 rule blast:
     input:
-        faa=rules.vibrant.output.viout2
+        fna=rules.cat_bins.output,
         db=rules.makedb.output.DB
     output:
-        daa=os.path.join(RESULTS_DIR, "diamond/{sample}.daa"), 
-        tsv=os.path.join(RESULTS_DIR, "diamond/{sample}.tsv")
+        daa=os.path.join(RESULTS_DIR, "diamond/phamb_viruses.daa"), 
+        tsv=os.path.join(RESULTS_DIR, "diamond/phamb_viruses.tsv")
     log:
-        os.path.join(RESULTS_DIR, "logs/{sample}.blast.log")
+        os.path.join(RESULTS_DIR, "logs/phamb_viruses.blast.log")
     threads:
         config["diamond"]["threads"]
     params:
@@ -59,11 +59,11 @@ rule blast:
     conda:
         os.path.join(ENV_DIR, "diamond.yaml")
     message:
-        "Running Diamond BLAST against IMGVR3 for {wildcards.sample}"
+        "Running Diamond BLAST against IMGVR3 for phamb viruses"
     shell:
         "(date && "
         "daa={output.daa} && "
-        "diamond blastp -q {input.faa} --db {input.db} --out {output.daa} -p {threads} --outfmt 100 && "
+        "diamond blastx -q {input.fna} --db {input.db} --out {output.daa} -p {threads} --outfmt 100 && "
         "diamond view --daa ${{daa%.*}} --max-target-seqs 1 -p {threads} --outfmt {params.outfmt} --out {output.tsv} && "
         "date) &> {log}"
 
@@ -75,13 +75,13 @@ rule taxonomy_coverage:
     input:
         ALL_SEQ=os.path.join(DB_DIR, "IMGVR_all_Sequence_information.tsv"),
         TSV=rules.blast.output.tsv,
-        COV=os.path.join(COV_DIR, "{sample}_gene_coverage.txt")
+        COV=rules.final_summarise_depth.output.depth
     output:
-        tax_cov=os.path.join(RESULTS_DIR, "taxa_cov/{sample}_IMGVR_taxonomy_coverage.txt")
+        tax_cov=os.path.join(RESULTS_DIR, "taxa_cov/phamb_viruses_IMGVR_taxonomy_coverage.txt")
     log:
-        os.path.join(RESULTS_DIR, "logs/{sample}.tax.cov.log")
+        os.path.join(RESULTS_DIR, "logs/phamb_viruses.tax.cov.log")
     message:
-        "Merging the IMGVR3 taxonomy and the gene coverages with BLAST output for {wildcards.sample}"
+        "Merging the IMGVR3 taxonomy and the gene coverages with BLAST output for phamb viruses"
     run:
         # Importing the IMG/VR3 sequence information
         dbase=pd.read_csv(input.ALL_SEQ, sep="\t", header=0)
@@ -91,22 +91,20 @@ rule taxonomy_coverage:
 
         # Importing the DIAMOND BLAST output
         tsv=pd.read_csv(input.TSV, sep="\t", header=None)
-        tsv=tsv[[0, 1]]
-        tsv.columns=["Contig", "## UViG"]
+        tsv.columns=["Contig", "## UViG", "pident", "length", "mismatch", "gapopen", "qstart", "qend", "sstart", "send", "evalue", "bitscore", "qlen", "slen"]
 
         # Removing extra string from UViG IDs
         tsv['## UViG']=tsv['## UViG'].str.split('|').str[0]
 
         # Merging the TSV file with the Taxonomy information
-        merged=pd.merge(tsv, dbase, on="## UViG")
-
-        # Removing all strings after last "_" from the contigID and writing the file
-        merged['Contig']=merged['Contig'].str.rsplit('_', n=1).str.get(0)
+        merged=pd.merge(tsv, dbase, on="## UViG", how="left")
 
         # Importing the gene coverage file
         cov=pd.read_csv(input.COV, sep="\t", header=0)
-        cov.columns=["Contig", "Gene", "Coverage"]
-        
+
+        # remove columns with the "bam-var" suffix from the coverage file
+        cov_edited=cov.loc[:, ~cov.columns.str.contains(".bam-var", case=True)]
+ 
         # Merging coverage with merged TSV+taxonomy file
-        final=pd.merge(merged, cov, on="Contig")
-        final.to_csv(output.tax_cov, sep="\t", header=0, index=None)
+        final=pd.merge(merged, cov_edited, on="Contig", how="left")
+        final.to_csv(output.tax_cov, sep="\t", header=True, index=None)

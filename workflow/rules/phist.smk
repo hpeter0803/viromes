@@ -9,9 +9,11 @@ Latest modification:
 # Purpose: to identify Phage hossts
 
 
+localrules: phist_input
+
 rule phist_all:
     input:
-        expand(os.path.join(RESULTS_DIR, "phist/{sample}/{filetype}.csv"), sample=SAMPLES, filetype=["common_kmers", "predictions"])
+        expand(os.path.join(RESULTS_DIR, "phist/{filetype}.csv"), sample=SEDIMENTS, filetype=["common_kmers", "predictions"])
     output:
         touch("status/phist.done")
 
@@ -19,23 +21,35 @@ rule phist_all:
 #######################################
 # rules for Phage-Host identification #
 #######################################
+rule phist_input:
+    input:
+        FNA=os.path.join(RESULTS_DIR, "vrhyme/dereplicated_bins.fna")
+    output:
+        FNA=os.path.join(RESULTS_DIR, "vrhyme/phist_input/dereplicated_bins.fna") 
+    message:
+        "PHIST can only handle folders which have the bins and nothing else; so symlinking"
+    shell:
+        "(date && ln -vs {input.FNA} {output} && date)"
+
 rule phist:
     input:
-        FNA=os.path.join(RESULTS_DIR, "checkv/{sample}/{sample}_goodQual_final.fna")
+        FNA=os.path.join(RESULTS_DIR, "vrhyme/phist_input/dereplicated_bins.fna")
     output:
-        KMERS=os.path.join(RESULTS_DIR, "phist/{sample}/common_kmers.csv"),
-        PRED=os.path.join(RESULTS_DIR, "phist/{sample}/predictions.csv")
+        KMERS=os.path.join(RESULTS_DIR, "phist/common_kmers.csv"),
+        PRED=os.path.join(RESULTS_DIR, "phist/predictions.csv")
     conda:
         os.path.join(ENV_DIR, "phist.yaml")
     log:
-        os.path.join(RESULTS_DIR, "logs/phist.{sample}.log")
+        os.path.join(RESULTS_DIR, "logs/phist.log")
     threads:
         config["phist"]["threads"]
     params:
-        MAGS=os.path.join(MAGS_DIR)
+        MAGS=os.path.join(MAGS_DIR),
+        PHIST=os.path.join(SUBMODULES, "phist/phist.py")
     message:
-        "Running PHiSt on {wildcards.sample}"
+        "Running PHiSt on dereplicated bins"
     shell:
-        "(date && mkdir $(dirname {output.KMERS} && "
-        "python phist.py -t {threads} {input.FNA} $(dirname {params.MAGS}) {output.KMERS} {output.PRED} && "
+        "(date && mkdir -p $(dirname {output.KMERS}) && "
+#        "(date && cd $(dirname {params.PHIST}) && make && "
+        "python3 {params.PHIST} -t {threads} $(dirname {input.FNA}) {params.MAGS} {output.KMERS} {output.PRED} && "
         "date) &> {log}"

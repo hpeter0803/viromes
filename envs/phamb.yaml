@@ -1,0 +1,8 @@
+channels:
+ - bioconda
+dependencies:
+ - snakemake
+ - scikit-learn=1.0.2
+ - cython
+ - pygraphviz
+ - python=3.9
