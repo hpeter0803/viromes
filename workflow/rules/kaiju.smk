@@ -1,12 +1,16 @@
-# FILEPATH: /c:/Users/gmichoud/Desktop/viromes/workflow/rules/kaiju.smk
-
+"""
+Author: Gregoire Michoud
+Affiliation: EPFL
+Date: [2023-10-18]
+Latest modification:
+"""
 
 rule taxonomy:
     input:
         os.path.join(RESULTS_DIR, "kaiju/kaiju_db_viruses.fmi"),
-        os.path.join(RESULTS_DIR, "taxa_cov/phamb_viruses_IMGVR_taxonomy_coverage.txt")
+        os.path.join(RESULTS_DIR, "kaiju/viral_contigs_kaiju.annotated.out")
     output:
-        touch("status/imgvr3.done")
+        touch("status/kaiju.done")
 
 rule kaiju_database:
 	output:
