@@ -24,7 +24,7 @@ rule kaiju_database:
 	shell:
 		"(date && mkdir -p $(dirname {output.fmi}) && "
 		"kaiju-makedb -s viruses -t {threads} && "
-		"mv viruses/kaiju_db_viruses.fmi {output.fmi} && mv nodes.dmp {output.fmi} && mv names.dmp {output.fmi} &&"
+		"mv viruses/kaiju_db_viruses.fmi {output.fmi} && mv nodes.dmp {output.nodes} && mv names.dmp {output.names} &&"
 		"date) &> {log}"
 	threads:
         config["kaiju"]["threads"]
